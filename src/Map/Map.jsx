@@ -73,7 +73,7 @@ const wmsLayer = new TileLayer({
 
 const view = new View({
   projection: getProjection('EPSG:3857'),   // 경도, 위도는 EPSG:3857
-  center: [14377937.215363277, 4186075.7744666543],
+  center: [14371912.630537545, 4182043.9659062927],
   zoom: 15,
 })
 
@@ -95,7 +95,6 @@ function initMap(){
   })
 
   getCurrentLocation();
-  currentLoc=[14371912.630537545, 4182043.9659062927];
 }
 
 // 3. 현 위치
@@ -151,8 +150,10 @@ var checkNum = 0;
 
 function onoffWMS(){
   if(checkNum % 2 === 0){
+    document.getElementById('myRoundButton').innerHTML='<div>off</div>'
     map.addLayer(wmsLayer);
   }else if(checkNum % 2 === 1){
+    document.getElementById('myRoundButton').innerHTML='<div>on</div>'
     map.removeLayer(wmsLayer);
   }
   checkNum++;
@@ -176,13 +177,13 @@ setInterval(function(){
 		function fetchData(){
 
 			const url = `https://geo.safemap.go.kr/geoserver/safemap/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&BBOX=${start[0]},${start[1]},${end[0]},${end[1]}&CRS=EPSG:3857&WIDTH=500&HEIGHT=560&LAYERS=A2SM_CRMNLHSPOT_TOT&STYLES=&FORMAT=image/png&QUERY_LAYERS=A2SM_CRMNLHSPOT_TOT&INFO_FORMAT=application/json&I=${I}&J=${J}`;
-			
+			//console.log(url);
+
 			fetch(url)
 			.then((response) => response.json())
 			.then((jsonData) => {
 				//displayData(jsonData);
         grade = jsonData.features[0].properties.GRAD
-                
 			})
 			.catch((error) => {   // 에러 or 범죄 주의 구간을 벗어난 경우 ( ex. 건물 안)
 				// 가장 최근 등급으로 유지하는 코드 필요
@@ -250,7 +251,7 @@ const Map = ({ children }) => {
         <div className="content" style={{width:"100%", height:"100%"}}>
           <MapContext.Provider className="inner" value={mapObj}>
             {children}
-            <button id="myRoundButton" onClick={onoffWMS}>버튼</button>
+            <button id="myRoundButton" onClick={onoffWMS}>on</button>
           </MapContext.Provider>
         </div>
 
