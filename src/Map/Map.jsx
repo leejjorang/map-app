@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MapContext from './MapContext'
+import CategoryList from './CategoryList.js';
 import 'ol/ol.css'
 import './Map.css'
 import { Map as OlMap, View, Feature } from 'ol'
@@ -14,6 +15,11 @@ import {
   defaults as defaultInteractions,
 } from 'ol/interaction'
 
+//import * as FetchData from './FetchData.js';
+
+//FetchData.js - 원하는 데이터 추출 파일 (현재는 return값 지정x)
+//FetchData.fetchData(); - 추출
+
 const safeKey = process.env.REACT_APP_SAFE_KEY;
 const mapKey = process.env.REACT_APP_MAP_KEY;
 
@@ -21,47 +27,14 @@ var map;
 var currentMarker;	// 현 위치 마커
 var currentLoc;	// 현 위치 좌표
 
-
-// open api로 데이터 불러오기 (예시, 결과값 : [index],[X],[Y] 배열)
-const parseString = require('react-native-xml2js').parseString;
-
-function fetchTest(){
-  
-  // 안에 들어가는 인증키는 .env 파일로 따로 분리 권장
-  const info = `https://safemap.go.kr/openApiService/data/getSecurityFacilityData.do?serviceKey=${safeKey}&pageNo=1&numOfRows=3378`;
-
-  fetch(info)
-  .then(res => res.text())
-  .then((response) => {
-    const cleanedData = response.replace('\ufeff', '');
-    parseString(cleanedData, (err, result) => {
-      if(err != null){
-        console.log('error : ', err);
-        return;
-      }
-      
-      const item = result.response.body[0].items[0].item;       // 데이터 내용
-
-      for(let i=0; i<item.length; i++){
-        console.log(item[i].OBJT_ID, item[i].X, item[i].Y);     // console 확인용, 원하는 내용 변경 후 추출 가능
-      }
-    })
-  })
-  .catch((error) => {
-    console.log("error: ",error);
-  });
-};
-//fetchTest();
-
-
 // 1. wmsLayer - 범죄주의구간
 
 const wmsSource = new TileWMS({
   url: 'https://www.safemap.go.kr/openApiService/wms/getLayerData.do',
-params: {     
-  'apikey':`${safeKey}`,
-  'layers':'A2SM_CRMNLHSPOT_TOT', 
-  'styles':'A2SM_CrmnlHspot_Tot_Tot'},
+  params: {     
+    'apikey':`${safeKey}`,
+    'layers':'A2SM_CRMNLHSPOT_TOT', 
+    'styles':'A2SM_CrmnlHspot_Tot_Tot'},
   transition: 0,
   projection: 'EPSG:4326',
 })
@@ -73,8 +46,8 @@ const wmsLayer = new TileLayer({
 
 const view = new View({
   projection: getProjection('EPSG:3857'),   // 경도, 위도는 EPSG:3857
-  center: [14371912.630537545, 4182043.9659062927],
-  zoom: 15,
+  center: [0.0, 0.0],
+  zoom: 17,
 })
 
 function initMap(){
@@ -205,7 +178,7 @@ setInterval(function(){
 		var J = 280;
 		
     // grade 데이터 구하기
-		function fetchData(){
+		function fetchGrade(){
 
 			const url = `https://geo.safemap.go.kr/geoserver/safemap/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&BBOX=${start[0]},${start[1]},${end[0]},${end[1]}&CRS=EPSG:3857&WIDTH=500&HEIGHT=560&LAYERS=A2SM_CRMNLHSPOT_TOT&STYLES=&FORMAT=image/png&QUERY_LAYERS=A2SM_CRMNLHSPOT_TOT&INFO_FORMAT=application/json&I=${I}&J=${J}`;
 			//console.log(url);
@@ -222,25 +195,10 @@ setInterval(function(){
 			});
 		};
 
-		fetchData();
+		fetchGrade();
 	}
 	
 }, 5000); // 5초
-
-
-// 긴급전화
-function callEmergency() {
-  window.location.href = "tel:112";
-}
-
-function warnSound(){
-  //경고음 근데 알람mp3파일 아직 없어서 넣어야함
-  document.getElementById("warning").addEventListener("click", function () {
-    let sound = document.getElementById("alertSound");
-    sound.play();
-  });
-}
-
 
 const Map = ({ children }) => {
   const [mapObj, setMapObj] = useState({})
@@ -250,6 +208,11 @@ const Map = ({ children }) => {
     //Map 객체 생성 및 vworld 지도 설정
     initMap();
     
+    document.getElementById('culocation').addEventListener('click', () => {
+      map.getView().setCenter(currentLoc);
+      map.getView().setZoom(17);
+    });
+
     /* RN이랑 통신 시 사용
     document.getElementById('button').addEventListener('click', () => {
       const message = {key1:'GRADE', key2:grade};
@@ -285,19 +248,8 @@ const Map = ({ children }) => {
             <button id="myRoundButton" onClick={onoffWMS}>on</button>
           </MapContext.Provider>
         </div>
-
-        <section id="category">
-            <div className="category-container">
-              <div className="category-list">
-                <button className="category-item" id="culocation">현위치</button>
-                <button className="category-item" id="safeplace">안전장소</button>
-                <button className="category-item" id="urgenttext" onClick={callEmergency}>긴급전화</button>
-                <button className="category-item" id="warning" onClick={warnSound}>경고음</button>
-              </div>
-            </div>
-        </section>
+      <CategoryList></CategoryList>
       </main>
-      <audio id="alertSound" src="alert.mp3" preload="auto"></audio>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Map from './Map'; //context.Provider를 가져옴
+import Map from './Map';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
