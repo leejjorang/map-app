@@ -10,6 +10,10 @@
 3. my-app root 디렉토리에 ( .gitignore, package.json, package-lock.json, README.md 있는 곳 ) .env 파일 만들기
    - .gitignore 파일 두 번째 줄에 .env 추가
 
+3-1. .env 파일 안 내용
+:  REACT_APP_SAFE_KEY = 키
+   REACT_APP_MAP_KEY = 키
+
 4. 터미널에
    - npm install ol
    - npm install react-native-xml2js
@@ -18,4 +22,3 @@
    - src/Map
    - src/App.js
    - src/index.js
-
