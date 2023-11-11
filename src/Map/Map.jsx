@@ -154,10 +154,10 @@ var checkNum = 0;
 
 function onoffWMS(){
   if(checkNum % 2 === 0){
-    document.getElementById('myRoundButton').innerHTML='<div>off</div>'
+    document.getElementsByClassName('switch_label').innerHTML='<div>off</div>'
     map.addLayer(wmsLayer);
   }else if(checkNum % 2 === 1){
-    document.getElementById('myRoundButton').innerHTML='<div>on</div>'
+    document.getElementsByClassName('switch_label').innerHTML='<div>on</div>'
     map.removeLayer(wmsLayer);
   }
   checkNum++;
@@ -233,6 +233,12 @@ const Map = ({ children }) => {
   <div className='container'>
       <nav>
         <div className="nav-container">
+          <div className="switch_wrapper">
+            <input type="checkbox" id="switch" className="chkbox" onChange={onoffWMS}/>
+            <label htmlFor="switch" className="switch_label">
+              <span className="btn"></span>
+            </label>
+          </div>
           <div className="search-container">
             <input type="text" id="searchInput" placeholder="주소 검색..." />
             <button id="searchBtn">검색</button>
@@ -245,7 +251,6 @@ const Map = ({ children }) => {
         <div className="content" style={{width:"100%", height:"100%"}}>
           <MapContext.Provider className="inner" value={mapObj}>
             {children}
-            <button id="myRoundButton" onClick={onoffWMS}>on</button>
           </MapContext.Provider>
         </div>
       <CategoryList></CategoryList>
