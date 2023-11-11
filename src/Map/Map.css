@@ -185,3 +185,6 @@ div.olControlScaleLine {
     outline: none;
   }
   
+  .ol-full-screen.ol-unselectable.ol-control {
+    visibility: hidden;
+  }

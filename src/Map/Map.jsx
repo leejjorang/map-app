@@ -3,7 +3,7 @@ import MapContext from './MapContext'
 import 'ol/ol.css'
 import './Map.css'
 import { Map as OlMap, View, Feature } from 'ol'
-import { defaults as defaultControls, FullScreen } from 'ol/control'
+import { defaults as defaultControls, FullScreen, ScaleLine } from 'ol/control'
 import { fromLonLat, get as getProjection } from 'ol/proj'
 import { Tile as TileLayer, Vector } from 'ol/layer'
 import { XYZ, TileWMS, Vector as VectorWMS } from 'ol/source'
@@ -94,8 +94,39 @@ function initMap(){
     view: view,
   })
 
+  map.addControl(new ScaleLine());
   getCurrentLocation();
 }
+
+const satelliteMap = new TileLayer({
+  name: 'Satellite',
+  visible: true,
+  source: new XYZ({
+    url: `http://api.vworld.kr/req/wmts/1.0.0/${mapKey}/Satellite/{z}/{y}/{x}.jpeg`
+  })
+});
+
+const handleSatelliteMapButton = () => {
+  map.addLayer(satelliteMap);
+  // or
+  map.removeLayer(satelliteMap)
+}
+
+const hybridMap = new TileLayer({
+  name: 'Hybrid',
+  visible: true,
+  source: new XYZ({
+    url: `http://api.vworld.kr/req/wmts/1.0.0/${mapKey}/Hybrid/{z}/{y}/{x}.png`
+  })
+});
+
+const handleHybridButtonClick = () => {
+  map.addLayer(hybridMap);
+  // or
+  map.removeLayer(hybridMap);
+};
+
+
 
 // 3. 현 위치
 
