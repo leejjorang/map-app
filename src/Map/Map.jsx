@@ -384,8 +384,7 @@ const Map = ({ children }) => {
     return () => map.setTarget(undefined) // 렌더링 누적 방지
   }, [])
 
-  return (
-  <div className='container'>
+  return <div className='container'>
       <nav>
         <div className="nav-container">
           <div className="switch_wrapper">
@@ -414,7 +413,6 @@ const Map = ({ children }) => {
       <CategoryList></CategoryList>
       </main>
     </div>
-  )
 }
 
 export default Map
