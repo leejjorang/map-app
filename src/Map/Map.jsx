@@ -202,7 +202,7 @@ function getAddress(){
     source : srchSource
   });
 
-  $.ajax({  // ADDRESS
+  $.ajax({  // ADDRESS 
         url: "https://api.vworld.kr/req/search?",
         type: "GET",
         dataType: "jsonp",
@@ -253,13 +253,13 @@ function getAddress(){
         element: document.querySelector('#popup'),
         positioning: 'bottom-center',
         stopEvent: false,
-        offset: [0, -50],
+        offset: [0, 0],
       });
 
     
       map.addOverlay(popup);
 
-      map.on('click', function(evt){    // 클릭 중첩 현상
+      function event(evt){
 
         // 클릭된 위치에서 마커 찾기
         var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
@@ -274,14 +274,19 @@ function getAddress(){
           var content = feature.get('content');
 
           document.querySelector('#popup-content').innerHTML=('<h2>' + title + '</h2><p>' + content + '</p>');
-          console.log(document.getElementById('popup-content'));
           popup.setPosition(coordinates);
+
         }else{  
           // 마커 밖을 선택하면 레이어 삭제
           popup.setPosition(undefined);
           map.removeLayer(srchLayer);
+          map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
         }
-      });
+      }
+      
+      map.on('singleclick', event);
+      console.log(document.getElementById('popup-content'));
+
     }
   }
 });
@@ -384,6 +389,9 @@ const Map = ({ children }) => {
             </label>
           </div>
           <div className="search-container">
+            <div id="popup" className="ol-popup">
+              <div id="popup-content" className="ol-popup-content">==</div>
+            </div>
             <input type="text" id="searchInput" placeholder="주소 검색..." />
             <button id="searchBtn" onClick={getAddress}>검색</button>
           </div>
@@ -395,9 +403,6 @@ const Map = ({ children }) => {
         <div className="content" style={{width:"100%", height:"100%"}}>
           <MapContext.Provider className="inner" value={mapObj}>
             {children}
-            <div id="popup" className='ol-popup'>
-              <div id="popup-content">==</div>
-            </div>
           </MapContext.Provider>
         </div>
       <CategoryList></CategoryList>
