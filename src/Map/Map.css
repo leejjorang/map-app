@@ -283,4 +283,5 @@ div.olControlScaleLine {
     border-width: 11px;
     left: 48px;
     margin-left: -11px;
+    display: none;
   }

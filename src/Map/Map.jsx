@@ -223,7 +223,11 @@ function getAddress(){
         success: function (data) {
           if(data.response.status === "NOT_FOUND"){
       // 빈 곳 처리
+      // 1. 결과
     }else{
+      // 함수 처리
+      // 1. 마커
+      // 2. 결과
       console.log(data);
       for(var i=0; i<(data.response.result.items).length; i++){
 
@@ -273,7 +277,7 @@ function getAddress(){
           var title = feature.get('title');
           var content = feature.get('content');
 
-          document.querySelector('#popup-content').innerHTML=('<h2>' + title + '</h2><p>' + content + '</p>');
+          document.querySelector('#popup-content').innerHTML='<h2>' + title + '</h2><p>' + content + '</p>';
           popup.setPosition(coordinates);
 
         }else{  
@@ -300,6 +304,8 @@ const Map = ({ children }) => {
     
     //Map 객체 생성 및 vworld 지도 설정
     initMap();
+
+    console.log($('#popup-content').attr("value"));
 
     // $.ajax({ 값 하나
     //       url: "https://api.vworld.kr/req/address?",
@@ -390,7 +396,7 @@ const Map = ({ children }) => {
           </div>
           <div className="search-container">
             <div id="popup" className="ol-popup">
-              <div id="popup-content" className="ol-popup-content">==</div>
+              <div id="popup-content" className="ol-popup-content" value="2">==</div>
             </div>
             <input type="text" id="searchInput" placeholder="주소 검색..." />
             <button id="searchBtn" onClick={getAddress}>검색</button>

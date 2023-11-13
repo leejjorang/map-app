@@ -17,6 +17,7 @@
 4. 터미널에
    - npm install ol
    - npm install react-native-xml2js
+   - npm install jquery
 
 5. 내용 추가해 줄 폴더, 파일
    - src/Map
