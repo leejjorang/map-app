@@ -67,7 +67,8 @@ function initMap(){
 
   map.addControl(new ScaleLine());
   map.addControl(new Zoom());
-  getCurrentLocation();
+  //getCurrentLocation();
+  currentLoc = [14264276.09009869955480099,4267799.0954595198854804];
   
   onoffWMS(); // 오동작 방지
 
