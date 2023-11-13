@@ -44,7 +44,7 @@ const wmsLayer = new TileLayer({
 
 const view = new View({
   projection: getProjection('EPSG:3857'),   // 경도, 위도는 EPSG:3857
-  center: [1.0, 1.0],
+  center: [14264276.09009869955480099,4267799.0954595198854804],
   zoom: 17,
 })
 
