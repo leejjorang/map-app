@@ -44,7 +44,7 @@ const wmsLayer = new TileLayer({
 
 const view = new View({
   projection: getProjection('EPSG:3857'),   // 경도, 위도는 EPSG:3857
-  center: [14264276.09009869955480099,4267799.0954595198854804],
+  center: [0.0, 0.0],
   zoom: 17,
 })
 
@@ -67,8 +67,7 @@ function initMap(){
 
   map.addControl(new ScaleLine());
   map.addControl(new Zoom());
-  //getCurrentLocation();
-  currentLoc = [14264276.09009869955480099,4267799.0954595198854804];
+  getCurrentLocation();
   
   onoffWMS(); // 오동작 방지
 
@@ -385,7 +384,8 @@ const Map = ({ children }) => {
     return () => map.setTarget(undefined) // 렌더링 누적 방지
   }, [])
 
-  return <div className='container'>
+  return (
+  <div className='container'>
       <nav>
         <div className="nav-container">
           <div className="switch_wrapper">
@@ -414,6 +414,7 @@ const Map = ({ children }) => {
       <CategoryList></CategoryList>
       </main>
     </div>
+  )
 }
 
 export default Map

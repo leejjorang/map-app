@@ -12,20 +12,19 @@ function warnSound(){
 }
 
 const CategoryList = () => {
-        return <section id="category">
+        return(
+            <section id="category">
                 <div className="category-container">
                     <div className="category-list">
                         <button className="category-item" id="culocation">현위치</button>
                         <button className="category-item" id="safeplace">안전장소</button>
                         <button className="category-item" id="urgenttext" onClick={callEmergency}>긴급전화</button>
                         <button className="category-item" id="warning" onClick={warnSound}>경고음</button>
+                        <audio id="alertSound" src="alert.mp3" preload="auto"></audio>
                     </div>
                 </div>
             </section>
-        ;
+        );
 }
-
-/**                        <audio id="alertSound" src="alert.mp3" preload="auto"></audio>
- */
 
 export default CategoryList;
