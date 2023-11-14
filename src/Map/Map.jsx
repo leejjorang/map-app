@@ -71,17 +71,17 @@ function initMap(){
   
   onoffWMS(); // 오동작 방지
 
-  $('#culocation').on('click', function(){
+  document.getElementById('culocation').addEventListener('click', () => {
     map.getView().setCenter(currentLoc);
     map.getView().setZoom(17);
   });
 }
 
-const satelliteMap = new TileLayer({
+const satelliteMap = new TileLayer({  
   name: 'Satellite',
   visible: true,
   source: new XYZ({
-    url: `http://api.vworld.kr/req/wmts/1.0.0/${mapKey}/Satellite/{z}/{y}/{x}.jpeg`
+    url: `http://api.vworld.kr/req/wmts/1.0.0/${mapKey}/Satellite/{z}/{y}/{x}.jpeg`  
   })
 });
 
@@ -180,7 +180,7 @@ var grade = null;
 //   grade = getGrade(currentLoc);
 //   console.log(grade);
 // }, 50000); // 50초
-
+ 
 function getAddress(){
 
   var iconStyle = new Style({
@@ -214,7 +214,7 @@ function getAddress(){
           bbox: "14300071.146077,4160339.6527027,14450071.146077,4210339.6527027",
           size: "20",
           page: "1",
-          query: $('#searchInput').val(),
+          query: document.getElementById('searchInput').value,
           type: "place",
           format: "json",
           errorformat: "json",
@@ -251,17 +251,16 @@ function getAddress(){
 
       srchLayer.setZIndex(15);
       map.addLayer(srchLayer);
-      
-      
+    
       var popup = new Overlay({
-        element: document.querySelector('#popup'),
+        element: document.getElementById('popup'),
         positioning: 'bottom-center',
         stopEvent: false,
         offset: [0, 0],
       });
-
     
       map.addOverlay(popup);
+      console.log('한번?');
 
       function event(evt){
 
@@ -277,9 +276,10 @@ function getAddress(){
           var title = feature.get('title');
           var content = feature.get('content');
 
-          document.querySelector('#popup-content').innerHTML='<h2>' + title + '</h2><p>' + content + '</p>';
+          document.querySelector('#content1').textContent = title;
+          document.querySelector('#content2').textContent = content;
           popup.setPosition(coordinates);
-
+ 
         }else{  
           // 마커 밖을 선택하면 레이어 삭제
           popup.setPosition(undefined);
@@ -291,21 +291,17 @@ function getAddress(){
       map.on('singleclick', event);
       console.log(document.getElementById('popup-content'));
 
-    }
+    } 
   }
 });
 }
 
- 
 const Map = ({ children }) => {
   const [mapObj, setMapObj] = useState({})
 
   useEffect(() => {
-    
     //Map 객체 생성 및 vworld 지도 설정
     initMap();
-
-    console.log($('#popup-content').attr("value"));
 
     // $.ajax({ 값 하나
     //       url: "https://api.vworld.kr/req/address?",
@@ -379,8 +375,9 @@ const Map = ({ children }) => {
       window.ReactNativeWebView.postMessage(JSON.stringify(message2));
     });
   */
+
     
-    setMapObj({ map })
+    setMapObj({ map })  
     return () => map.setTarget(undefined) // 렌더링 누적 방지
   }, [])
 
@@ -394,10 +391,13 @@ const Map = ({ children }) => {
               <span className="btn"></span>
             </label>
           </div>
+          <div id="popup" className="ol-popup">
+              <div id="popup-content" className="ol-popup-content">
+                <h2 id = "content1"></h2>
+                <p id = "content2"></p>
+              </div>
+          </div>
           <div className="search-container">
-            <div id="popup" className="ol-popup">
-              <div id="popup-content" className="ol-popup-content" value="2">==</div>
-            </div>
             <input type="text" id="searchInput" placeholder="주소 검색..." />
             <button id="searchBtn" onClick={getAddress}>검색</button>
           </div>
