@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import MapContext from './MapContext'
-import CategoryList from './CategoryList.js';
-import { getGrade } from './GetGrade.js';
+import CategoryList from '../Feature/CategoryList.js';
+import { getGrade } from '../Feature/GetGrade.js';
 import 'ol/ol.css'
 import './Map.css'
 import { Map as OlMap, View, Feature, Overlay } from 'ol'
@@ -10,7 +10,7 @@ import { fromLonLat, get as getProjection } from 'ol/proj'
 import { Tile as TileLayer, Vector, Marker } from 'ol/layer'
 import { XYZ, TileWMS, Vector as VectorWMS } from 'ol/source'
 import { Style, Circle, Fill, Stroke, Icon } from 'ol/style'
-import { Point } from 'ol/geom'
+import { Point, LineString } from 'ol/geom'
 import { DragRotateAndZoom, defaults as defaultInteractions} from 'ol/interaction'
 import $, { get } from 'jquery';
 
@@ -24,6 +24,48 @@ const mapKey = process.env.REACT_APP_MAP_KEY;
 var map;
 var currentMarker;	// 현 위치 마커
 var currentLoc;	// 현 위치 좌표
+
+ // vector layer
+
+ function route(){
+  const coords = [129.101064, 35.1333136, 129.1007941, 35.1332841, 129.0990208, 35.1335472, 129.0987385, 35.1337945, 129.0982911, 35.1341866,129.0981828, 35.1342974, 129.0978824, 35.1346048, 129.0963883, 35.1348433, 129.0955102, 35.1355855, 129.0952774, 35.1355384, 129.0943901, 35.1353587, 129.0941191, 35.1353038, 129.0936896, 35.1352168, 129.0931664, 35.1351874, 129.0918973, 35.1351163, 129.0905529, 35.135029, 129.0893977, 35.1349703, 129.0891596, 35.1349582, 129.0880074, 35.1348997, 129.0869219, 35.1348445, 129.085592, 35.134777, 129.0847848, 35.134736];
+  let path = [];
+  for(let i = 0; i < coords.length; i+=2) {
+   path.push([coords[i], coords[i + 1]]);
+ }
+
+ const lineString = new LineString(path);
+ lineString.transform('EPSG:4326', 'EPSG:3857');
+ const feature = new Feature({
+   geometry: lineString
+ });
+ 
+ const source = new VectorWMS();
+ source.addFeature(feature);
+ var vector = new Vector({
+   source,
+   style: new Style({
+     stroke: new Stroke({
+       color: 'red',
+       width: 3
+     })
+   })
+ })
+
+map.addLayer(vector);
+ }
+
+const routeLayer = new TileLayer({
+  source: new TileWMS({
+    url: 'https://www.safemap.go.kr/openApiService/wms/getLayerData.do',
+    params: {     
+      'apikey':`${safeKey}`,
+      'layers':'A2SM_CRMNLHSPOT_TOT', 
+      'styles':'A2SM_CrmnlHspot_Tot_Tot'},
+    transition: 0,
+    projection: 'EPSG:4326',
+  }) })
+
 
 // 1. wmsLayer - 범죄주의구간
 
@@ -76,6 +118,7 @@ function initMap(){
     map.getView().setZoom(17);
   });
 }
+
 
 const satelliteMap = new TileLayer({  
   name: 'Satellite',
@@ -303,6 +346,30 @@ const Map = ({ children }) => {
     //Map 객체 생성 및 vworld 지도 설정
     initMap();
 
+    route();
+    const start_x = 14371465.30;
+    const start_y = 4182016.47;
+    const arrive_x = 14369631.5;
+    const arrive_y = 4182198.1;
+    
+    fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            start_point: [start_x, start_y],
+            arrive_point: [arrive_x, arrive_y]
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.route); 
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    
     // $.ajax({ 값 하나
     //       url: "https://api.vworld.kr/req/address?",
     //       type: "GET",

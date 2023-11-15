@@ -1,20 +1,3 @@
-.container{
-    position : fixed;
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-}
-
-div.olControlScaleLine { 
-    left: auto; 
-    bottom:10px; 
-    font-size:xx-small; 
-    right:10px; 
-    background-color:white; 
-    margin: 20 20 20 20; 
-    border:solid white 10px; 
-    }     
-
 @font-face {
     font-family: "TheJamsil5Bold";
     src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2")
@@ -29,74 +12,13 @@ div.olControlScaleLine {
     box-sizing: border-box;
   }
   
-  html {
+  /* html {
     font-size: 10px;
     font-family: "TheJamsil5Bold";
     height: 100%;
     width: 100%;
   }
-  
-  nav {
-    /* background-color: #e69a06; */
-  }
-  
-  .nav-container {
-    width: 100%;
-    height: 100%;
-    padding: 2rem 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .nav-title {
-    font-size: 3rem;
-  }
-  
-  .nav-safe {
-    width: 50px;
-    font-size: 1.5rem;
-    border: 0;
-    cursor: pointer;
-    font-family: inherit;
-    background-color: white;
-  }
-  
-  .nav-safe:hover {
-    background-color: rgb(202, 199, 199);
-  }
-  
-  .category-title {
-    font-size: 3.5rem;
-  }
-  
-  .category-list {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 50px;
-    z-index: 100;
-    border-top: 1px;
-    background-color: white;
-  }
-  
-  .category-item {
-    width: 25%;
-    height: 5rem;
-    background: none;
-    border: none;
-    font-family: inherit;
-    font-size: 1.6rem;
-  }
-  
-  .category-item:hover {
-    color: gray;
-    cursor: pointer;
-  }
-  
+   */
   .inner {
     padding: 0 1.5rem;
     width: 100%;    /* 1024 이상 잘림 방지*/
@@ -117,17 +39,6 @@ div.olControlScaleLine {
     width: 100%;
   }
   */
-  
-  nav {
-    height: 59px;
-  }
-  
-  main {
-    padding-top: 1.5rem;
-    height: 100%;   /* 확장 */
-    display: flex;
-    flex-direction: column;
-  }
 
   /*
   #map {
@@ -137,151 +48,7 @@ div.olControlScaleLine {
     margin-top: 0;
   }
   */
-  
-  .search-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    margin-top: 0;
-    padding-bottom: 0;
-  }
-  
-  .search-container input {
-    padding: 5px 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .search-container button {
-    padding: 5px 10px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .search-container button:hover {
-    background-color: #555;
-  }
-  
 
   #map {
     position: relative; /* 이를 통해 map 내부의 자식 요소들에게 절대 위치를 지정할 수 있게 됩니다. */
-  }
-  
-  #myRoundButton {
-    position: absolute; /* 버튼의 위치를 절대 위치로 지정 */
-    top: 10px; /* 버튼을 지도의 상단에서 10px 떨어진 곳에 위치 */
-    left: 10px; /* 버튼을 지도의 왼쪽에서 10px 떨어진 곳에 위치 */
-    z-index: 10; /* 다른 지도 요소들 위에 버튼이 보이게 하기 위해 z-index 값을 크게 설정 */
-    border-radius: 50%; /* 버튼을 원형으로 만들기 위해 */
-    padding: 10px 15px; /* 버튼 내부의 패딩 값 지정 */
-  }
-  
-  .searchInput {
-    width: 50px;
-    height: 100%;
-    border: 0px;
-    outline: none;
-  }
-  
-  .ol-full-screen.ol-unselectable.ol-control {
-    visibility: hidden;
-  }
-
-  .switch_wrapper{
-    height: 50px;
-    width: 50px;
-    align-items: center;
-    margin: 50px auto;
-    bottom: 0;
-  }
-
-  .chkbox{
-    position: absolute;
-    appearance: none;
-  }
-
-  .switch_label{
-    position: relative;
-    width: 50px;
-    height: 25px;
-    background-color: white;
-    display: inline-block;
-    border: 2px solid rgb(245, 200, 193);
-    border-radius: 18px;
-    transition: 0.3s;
-  }
-
-  .switch_label:hover{
-    background-color: rgb(228, 225, 225);
-  }
-
-  .btn{
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    top: 3px;
-    left: 2px;
-    display: inline-block;
-    border-radius: 15px;
-    background-color: rgb(245, 200, 193);
-    transition: 0.2s;
-  }
-
-  /* 체크 */
-
-  .chkbox:checked+.switch_label{
-    background: rgb(247, 117, 57);
-    border: 2px solid rgb(247, 117, 57);
-    
-  }
-
-  .chkbox:checked+.switch_label:hover{
-    background-color: rgb(255, 132, 101);
-  }
-
-  .chkbox:checked+.switch_label .btn{
-    left: 29px;
-    background-color: white;
-    box-shadow: 1px black;
-  }
-
-  .ol-popup {
-    position: absolute;
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    border: 1px solid #cccccc;
-    bottom: 12px;
-    left: -50px;
-    min-width: 280px;
-    z-index: 0;  
-  }
-  .ol-popup:after, .ol-popup:before {
-    top: 100%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-  }
-  .ol-popup:after {
-    border-top-color: white;
-    border-width: 10px;
-    left: 48px;
-    margin-left: -10px;
-  }
-  .ol-popup:before {
-    border-top-color: #cccccc;
-    border-width: 11px;
-    left: 48px;
-    margin-left: -11px;
   }
