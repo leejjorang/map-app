@@ -41,6 +41,7 @@ nav {
 }
 
 .nav-container {
+  position: relative;
   width: 100%;
   height: 100%;
   padding: 2rem 0;
@@ -55,6 +56,8 @@ nav {
 }
 
 .nav-safe {
+  position : absolute;
+  right: 0;
   width: 50px;
   font-size: 1.5rem;
   border: 0;
@@ -125,7 +128,6 @@ nav {
 
 main {
   position: relative;
-  padding-top: 1.5rem;
   height: 100%;   /* 확장 */
   display: flex;
   flex-direction: column;
@@ -329,13 +331,12 @@ main {
 
   .openbtn {
   position: absolute;
-  width: 50px;
-  font-size: 15px;
-  cursor: pointer;
+  width: 40px;
+  font-size: 1.5rem;
+  align-items: center;
   background-color: #111;
   color: white;
-  bottom: 0;
-  padding: 10px 15px;
+  padding: 5px 5px;
   border: none;
   }
 

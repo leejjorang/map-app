@@ -500,7 +500,7 @@ const Map = ({ children }) => {
   <div className='container'> 
       <nav>
         <div className="nav-container">
-        <button className="openbtn" onClick={openMenu}>☰</button>
+          <button className="openbtn" onClick={openMenu}>☰</button>
           <div className="search-container">
             <input type="text" id="searchInput" placeholder="주소 검색..." />
             <button id="searchBtn" onClick={getAddress}>검색</button>
