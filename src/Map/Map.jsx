@@ -557,7 +557,7 @@ const Map = ({ children }) => {
     setPrevGrade(grade);
     if(selectedGrade > 0 && selectedGrade < grade && prevGrade !== grade){
       console.log('알림 실행 : 사용자가 선택 + 선택 값보다 큰 등급 + 등급의 변화 ');
-      const message = {key:'NOTIFICATION'};
+      const message = {key1:'NOTIFICATION', key2:`${grade}`};
       window.ReactNativeWebView.postMessage(JSON.stringify(message));
   }}, 2000)};
 
