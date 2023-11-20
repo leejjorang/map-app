@@ -379,7 +379,7 @@ main {
     align-items: center;
     max-width: 300px; /* 최대 너비를 300px로 설정 */
     width: calc(100% - 20px); /* 부모 요소에 맞추어 너비를 100%로 설정 */
-    z-index: 10;
+    z-index: 30;
     background-color: white;
     border: 1px solid #ddd;
     border-top: none;
