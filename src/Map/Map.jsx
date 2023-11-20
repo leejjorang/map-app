@@ -313,8 +313,8 @@ function fetchtest(){
     })
   });
 
-const start_x = 14371465.30;
-const start_y = 4182016.47;
+const start_x = 14371382.75;
+const start_y = 4182476.77;
 const arrive_x = 14369631.5;
 const arrive_y = 4182198.1;
 
@@ -331,23 +331,25 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
   .then(response => response.json())
   .then(data => {
     console.log(data.route); 
-    for(var i=0; i<(data.route).length; i++){
-
-      var datalists = data.route[i];
   
-      if(i===0){
-        map.getView().setCenter(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857')));
+        map.getView().setCenter(fromLonLat([data.route[0].lon, data.route[0].lat],getProjection('EPSG:3857')));
         map.getView().setZoom(17);
-      }
   
-      var marker = new Feature({
-        geometry: new Point(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857'))),
-        name: "marker",
+      var marker1 = new Feature({
+        geometry: new Point(fromLonLat([data.route[0].lon, data.route[0].lat],getProjection('EPSG:3857'))),
+        name: "marker1",
+      });
+
+      var marker2 = new Feature({
+        geometry: new Point(fromLonLat([data.route[(data.route).length].lon, data.route[(data.route).length].lat],getProjection('EPSG:3857'))),
+        name: "marker2",
       });
       
-      marker.setStyle(iconStyle);
-      source.addFeature(marker);
-    }
+      marker1.setStyle(iconStyle);
+      marker2.setStyle(iconStyle);
+      source.addFeature(marker1);
+      source.addFeature(marker2);
+
   
     map.addLayer(layer);
 
@@ -360,7 +362,7 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
 // vector layer
 
  function route(){
-  const coords = [129.101064, 35.1333136, 129.1007941, 35.1332841, 129.0990208, 35.1335472, 129.0987385, 35.1337945, 129.0982911, 35.1341866,129.0981828, 35.1342974, 129.0978824, 35.1346048, 129.0963883, 35.1348433, 129.0955102, 35.1355855, 129.0952774, 35.1355384, 129.0943901, 35.1353587, 129.0941191, 35.1353038, 129.0936896, 35.1352168, 129.0931664, 35.1351874, 129.0918973, 35.1351163, 129.0905529, 35.135029, 129.0893977, 35.1349703, 129.0891596, 35.1349582, 129.0880074, 35.1348997, 129.0869219, 35.1348445, 129.085592, 35.134777, 129.0847848, 35.134736];
+  const coords = [ 129.1003727,35.1366576,129.1001105,35.1370199,129.0995125,35.1371386, 129.098773,35.1367982, 129.0983886,35.136615, 129.097634,35.1362634, 129.0969316,35.1359131, 129.0967978,35.1358463, 129.0958545,35.1356552, 129.0955102,35.1355855, 129.0952774,35.1355384, 129.0943901,35.1353587, 129.0941191,35.1353038, 129.0936896,35.1352168, 129.0931664,35.1351874, 129.0918973,35.1351163,129.0905529,35.135029, 129.0893977,35.1349703, 129.0891596 ,35.1349582, 129.0880074,35.1348997, 129.0869219,35.1348445, 129.085592,35.134777, 129.0847848,35.134736];
   let path = [];
   for(let i = 0; i < coords.length; i+=2) {
    path.push([coords[i], coords[i + 1]]);
@@ -378,8 +380,8 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
    source,
    style: new Style({
      stroke: new Stroke({
-       color: 'red',
-       width: 3
+       color: '#5689d6',
+       width: 3,
      })
    })
  })
@@ -411,7 +413,7 @@ const Map = ({ children }) => {
 
   
 
-    //route();
+    route();
     //fetchtest();
     
     // $.ajax({ 값 하나
@@ -499,7 +501,9 @@ const Map = ({ children }) => {
   const handleSearchResults = (data) => {
     if (data.response.status !== "NOT_FOUND" && data.response.result) {
       setSearchResults(data.response.result.items); // 검색 결과를 state에 저장
-      getLayer(data);
+      map.on('click', function(){
+        setSearchResults([]);
+      })
     } else {
       setSearchResults([]); // 결과가 없으면 빈 배열로 설정
     }
@@ -919,7 +923,7 @@ const Map = ({ children }) => {
     if(selectedGrade > 0 && selectedGrade < grade && prevGrade !== grade){
       console.log('알림 실행 : 사용자가 선택 + 선택 값보다 큰 등급 + 등급의 변화 ');
       const message = {key:'NOTIFICATION'};
-      //window.ReactNativeWebView.postMessage(JSON.stringify(message));
+      window.ReactNativeWebView.postMessage(JSON.stringify(message));
   }}, 2000)};
 
   return() => {
