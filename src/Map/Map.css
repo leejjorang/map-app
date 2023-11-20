@@ -375,7 +375,7 @@ main {
   #searchResults {
     position: absolute;
     top: 100%; /* 입력 필드의 높이만큼 아래에 위치 */
-    left: 42%;
+    left: 0;
     right: 0;
     max-width: 300px; /* 최대 너비를 300px로 설정 */
     width: calc(100% - 20px); /* 부모 요소에 맞추어 너비를 100%로 설정 */
