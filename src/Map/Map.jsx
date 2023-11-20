@@ -172,133 +172,6 @@ function getCurrentLocation(){
     }
   }
 
-// 일정 간격 체크
-
-// setInterval(() => {
-//   grade = getGrade(currentLoc);
-//   console.log(grade);
-// }, 50000); // 50초
-
-
-// function getAddress(){
-
-//   $.ajax({  // ADDRESS 
-//         url: "https://api.vworld.kr/req/search?",
-//         type: "GET",
-//         dataType: "jsonp",
-//         data: {
-//           service: "search",
-//           request: "search",
-//           version: "2.0",
-//           crs: "EPSG:900913",
-//           bbox: "14300071.146077,4160339.6527027,14450071.146077,4210339.6527027",
-//           size: "20",
-//           page: "1",
-//           query: document.getElementById('searchInput').value,
-//           type: "place",
-//           format: "json",
-//           errorformat: "json",
-//           key: mapKey
-//         },
-//         success: function (data){
-//       getLayer(data);
-//     }
-// });   
-// }
-
-
-// function getLayer (data) {
-  
-//   var iconStyle = new Style({
-//     image: new Icon({
-//       src:'https://map.vworld.kr/images/ol3/marker_blue.png'
-//     })
-//   });
-//   // var iconStyle = new Style({
-//   //   image: new Circle({
-//   //     radius: 6,
-//   //     fill: new Fill({color: 'blue'}),
-//   //     stroke: new Stroke({color: 'white', width: 3})
-//   //   })
-//   // });
-//   // searchMarker.setStyle(iconStyle);
-
-//   var srchSource = new VectorWMS();
-//   var srchLayer = new Vector({
-//     source : srchSource
-//   });
-
-//   if(data.response.status === "NOT_FOUND"){
-//     // 빈 곳 처리
-//     // 1. 결과
-//   }else{
-//     // 함수 처리
-//     // 1. 마커
-//     // 2. 결과
-//     console.log(data);
-//     for(var i=0; i<(data.response.result.items).length; i++){
-
-//       var datalists = data.response.result.items[i];
-
-//       if(i===0){
-//         map.getView().setCenter([datalists.point.x*1, datalists.point.y*1]);
-//         map.getView().setZoom(17);
-//       }
-
-//       var marker = new Feature({
-//         geometry: new Point([datalists.point.x, datalists.point.y]),
-//         name: "searchedLocation",
-//         title: datalists.title,
-//         content: datalists.address.road ? datalists.address.road : datalists.address.parcel,  // 도로명 주소가 있으면 road, 없으면 parcel
-//       });
-      
-//       marker.setStyle(iconStyle);
-//       srchSource.addFeature(marker);
-//     }
-
-//     srchLayer.setZIndex(15);
-//     map.addLayer(srchLayer);
-
-//     var popup = new Overlay({ 
-//       element: document.querySelector('.ol-popup'),
-//       positioning: 'bottom-center',
-//       stopEvent: false, 
-//       offset: [0, 0],
-//     }); 
-  
-//     map.addOverlay(popup);
-
-//     function event(evt){
-
-//       // 클릭된 위치에서 마커 찾기
-//       var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-//         return feature;
-//       });
-
-//       if(feature){
-//         var coordinates = feature.getGeometry().getCoordinates();
-    
-//         var title = feature.get('title');
-//         var content = feature.get('content');
-
-//         document.querySelector('#content1').textContent = title;
-//         document.querySelector('#content2').textContent = content;
-//         popup.setPosition(coordinates);
-
-//         console.log(document.querySelector('.popup-content')); 
-
-//       }else{  
-//         // 마커 밖을 선택하면 레이어 삭제
-//         popup.setPosition(undefined);
-//         map.removeLayer(srchLayer);
-//         map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
-//       }
-//     }
-    
-//     map.on('singleclick', event);
-//   } 
-// }
-
 
 function fetchtest(){
 
@@ -313,10 +186,10 @@ function fetchtest(){
     })
   });
 
-const start_x = 14371382.75;
-const start_y = 4182476.77;
-const arrive_x = 14369631.5;
-const arrive_y = 4182198.1;
+const start_x = 14377898.964024764;
+const start_y = 4186136.484549115;
+const arrive_x = 14378039.096214402;
+const arrive_y = 4186522.952128591;
 
 fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
     method: 'POST',
@@ -331,25 +204,24 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
   .then(response => response.json())
   .then(data => {
     console.log(data.route); 
-  
-        map.getView().setCenter(fromLonLat([data.route[0].lon, data.route[0].lat],getProjection('EPSG:3857')));
-        map.getView().setZoom(17);
-  
-      var marker1 = new Feature({
-        geometry: new Point(fromLonLat([data.route[0].lon, data.route[0].lat],getProjection('EPSG:3857'))),
-        name: "marker1",
-      });
 
-      var marker2 = new Feature({
-        geometry: new Point(fromLonLat([data.route[(data.route).length].lon, data.route[(data.route).length].lat],getProjection('EPSG:3857'))),
-        name: "marker2",
+    for(var i=0; i<(data.route).length; i++){
+
+      var datalists = data.route[i];
+  
+      if(i===0){
+        map.getView().setCenter(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857')));
+        map.getView().setZoom(17);
+      }
+  
+      var marker = new Feature({
+        geometry: new Point(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857'))),
+        name: "marker",
       });
       
-      marker1.setStyle(iconStyle);
-      marker2.setStyle(iconStyle);
-      source.addFeature(marker1);
-      source.addFeature(marker2);
-
+      marker.setStyle(iconStyle);
+      source.addFeature(marker);
+    }
   
     map.addLayer(layer);
 
@@ -359,14 +231,52 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
   });
 }
 
+
 // vector layer
 
  function route(){
-  const coords = [ 129.1003727,35.1366576,129.1001105,35.1370199,129.0995125,35.1371386, 129.098773,35.1367982, 129.0983886,35.136615, 129.097634,35.1362634, 129.0969316,35.1359131, 129.0967978,35.1358463, 129.0958545,35.1356552, 129.0955102,35.1355855, 129.0952774,35.1355384, 129.0943901,35.1353587, 129.0941191,35.1353038, 129.0936896,35.1352168, 129.0931664,35.1351874, 129.0918973,35.1351163,129.0905529,35.135029, 129.0893977,35.1349703, 129.0891596 ,35.1349582, 129.0880074,35.1348997, 129.0869219,35.1348445, 129.085592,35.134777, 129.0847848,35.134736];
-  let path = [];
-  for(let i = 0; i < coords.length; i+=2) {
-   path.push([coords[i], coords[i + 1]]);
- }
+  const coords = [129.1003727,35.1366576,129.1001105,35.1370199,129.0995125,35.1371386, 129.098773,35.1367982, 129.0983886,35.136615, 129.097634,35.1362634, 129.0969316,35.1359131, 129.0967978,35.1358463, 129.0958545,35.1356552, 129.0955102,35.1355855, 129.0952774,35.1355384, 129.0943901,35.1353587, 129.0941191,35.1353038, 129.0936896,35.1352168, 129.0931664,35.1351874, 129.0918973,35.1351163,129.0905529,35.135029, 129.0893977,35.1349703, 129.0891596 ,35.1349582, 129.0880074,35.1348997, 129.0869219,35.1348445, 129.085592,35.134777, 129.0847848,35.134736];
+
+  let dstSource = new VectorWMS();
+  let dstLayer = new Vector({
+    source : dstSource
+  });
+
+ let dstIconStyle = new Style({
+  image: new Icon({
+    src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+    })
+  });
+
+ let dstMarker = new Feature({
+  geometry: new Point(fromLonLat([coords[(coords.length-2)], coords[(coords.length-1)]],getProjection('EPSG:3857'))),
+  name: "destination",
+});
+
+let srcIconStyle= new Style({
+  image: new Circle({
+    radius: 6,
+    fill: new Fill({color: 'blue'}),
+    stroke: new Stroke({color: 'white', width: 3})
+  })
+});
+
+let srcMarker = new Feature({
+  geometry: new Point(fromLonLat([coords[0], coords[1]],getProjection('EPSG:3857'))),
+  name: "source",
+});
+
+dstMarker.setStyle(dstIconStyle);
+dstSource.addFeature(dstMarker);
+srcMarker.setStyle(srcIconStyle);
+dstSource.addFeature(srcMarker);
+dstLayer.setZIndex(2);
+map.addLayer(dstLayer);
+
+let path = [];
+for(let i = 0; i < coords.length; i+=2) {
+ path.push([coords[i], coords[i + 1]]);
+}
 
  const lineString = new LineString(path);
  lineString.transform('EPSG:4326', 'EPSG:3857');
@@ -386,6 +296,7 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
    })
  })
 
+vector.setZIndex(2);
 map.addLayer(vector);
 
  }
@@ -416,80 +327,6 @@ const Map = ({ children }) => {
     route();
     //fetchtest();
     
-    // $.ajax({ 값 하나
-    //       url: "https://api.vworld.kr/req/address?",
-    //       type: "GET",
-    //       dataType: "jsonp",
-    //       data: {
-    //         service: "address",
-    //         request: "GetCoord",
-    //         version: "2.0",
-    //         crs: "EPSG:4326",
-    //         type: "ROAD",
-    //         address: "오설록",
-    //         format: "json",
-    //         errorformat: "json",
-    //         key: mapKey
-    //       },
-    //       success: function (result) {
-    //         console.log(result);
-    //       }
-    //     })
-
-    // $.ajax({  // ADDRESS
-    //       url: "https://api.vworld.kr/req/search?",
-    //       type: "GET",
-    //       dataType: "jsonp",
-    //       data: {
-    //         service: "search",
-    //         request: "search",
-    //         version: "2.0",
-    //         crs: "EPSG:900913",
-    //         bbox: "14300071.146077,4160339.6527027,14450071.146077,4210339.6527027",
-    //         size: "10",
-    //         page: "1",
-    //         query: "해운대로",
-    //         type: "address",
-    //         category: "road",
-    //         format: "json",
-    //         errorformat: "json",
-    //         key: mapKey
-    //       },
-    //       success: function (result) {
-    //         console.log(result);
-    //       }
-    //     })
-
-    // $.ajax({
-    //         url: "https://map.vworld.kr/search.do?",
-    //         type: "GET",
-    //         dataType: "jsonp",
-    //         data:{
-    //         category:"poi",
-    //         q:"푸라닭",
-    //         pageunit: "200",
-    //         output:'json',
-    //         pageindex:'50',
-    //         apiKey: mapKey,
-    //         },
-    //     success: function (result) {
-    //           console.log(result);
-    //         }
-    //       })
-      
-    /* RN이랑 통신 시 사용
-    document.getElementById('button').addEventListener('click', () => {
-      const message = {key1:'GRADE', key2:grade};
-      window.ReactNativeWebView.postMessage(JSON.stringify(message));
-    });
-
-    document.getElementById('button2').addEventListener('click', () => {
-      const message2 = {key1:'SMS', key2:'SMS'};
-      window.ReactNativeWebView.postMessage(JSON.stringify(message2));
-    });
-  */
-
-    
     setMapObj({ map })  
     return () => map.setTarget(undefined) // 렌더링 누적 방지 
   }, [])
@@ -501,9 +338,6 @@ const Map = ({ children }) => {
   const handleSearchResults = (data) => {
     if (data.response.status !== "NOT_FOUND" && data.response.result) {
       setSearchResults(data.response.result.items); // 검색 결과를 state에 저장
-      map.on('click', function(){
-        setSearchResults([]);
-      })
     } else {
       setSearchResults([]); // 결과가 없으면 빈 배열로 설정
     }
@@ -633,8 +467,6 @@ const Map = ({ children }) => {
     } 
   }
 
-  
-
   // 검색 결과 중 하나를 클릭했을 때 호출될 함수
   const handleResultSelect = (item) => {
     const coords = ([parseFloat(item.point.x),parseFloat(item.point.y)]);
@@ -644,120 +476,10 @@ const Map = ({ children }) => {
     setSearchTerm(item.title); // 검색창에 선택된 주소 표시
   };
 
-  // // const getAddress = useCallback(() => {
-    
-  // //   $.ajax({  // ADDRESS 
-  // //         url: "https://api.vworld.kr/req/search?",
-  // //         type: "GET",
-  // //         dataType: "jsonp",
-  // //         data: {
-  // //           service: "search",
-  // //           request: "search",
-  // //           version: "2.0",
-  // //           crs: "EPSG:900913",
-  // //           bbox: "14300071.146077,4160339.6527027,14450071.146077,4210339.6527027",
-  // //           size: "20",
-  // //           page: "1",
-  // //           query: document.getElementById('searchInput').value,
-  // //           type: "place",
-  // //           format: "json",
-  // //           errorformat: "json",
-  // //           key: mapKey
-  // //         },
-  // //         success: function (data){
-  // //       getLayer(data);
-  // //     }
-  // // });   
-  // // }, []);
-
-  // const getLayer = useCallback((data) => {
-
-  //   let iconStyle = new Style({
-  //     image: new Icon({
-  //       src:'https://map.vworld.kr/images/ol3/marker_blue.png'
-  //     })
-  //   });
-    
-  //   let srchSource = new VectorWMS();
-  //   let srchLayer = new Vector({
-  //     source : srchSource
-  //   });
-  
-  //   if(data.response.status === "NOT_FOUND"){
-  //     // 빈 곳 처리
-  //     // 1. 결과
-  //   }else{
-  //     // 함수 처리
-  //     // 1. 마커
-  //     // 2. 결과
-  //     console.log(data);
-  //     for(var i=0; i<(data.response.result.items).length; i++){
-  
-  //       var datalists = data.response.result.items[i];
-  
-  //       if(i===0){
-  //         map.getView().setCenter([datalists.point.x*1, datalists.point.y*1]);
-  //         map.getView().setZoom(17);
-  //       }
-  
-  //       let marker = new Feature({
-  //         geometry: new Point([datalists.point.x, datalists.point.y]),
-  //         name: "searchedLocation",
-  //         title: datalists.title,
-  //         content: datalists.address.road ? datalists.address.road : datalists.address.parcel,  // 도로명 주소가 있으면 road, 없으면 parcel
-  //       });
-        
-  //       marker.setStyle(iconStyle);
-  //       srchSource.addFeature(marker);
-  //     }
-  
-  //     srchLayer.setZIndex(15);
-  //     map.addLayer(srchLayer);
-  
-  //     let popup = new Overlay({ 
-  //       element: document.querySelector('.ol-popup'),
-  //       positioning: 'bottom-center',
-  //       stopEvent: false, 
-  //       offset: [0, 0],
-  //     }); 
-    
-  //     map.addOverlay(popup);
-  
-  //     function event(evt){
-  
-  //       // 클릭된 위치에서 마커 찾기
-  //       let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-  //         return feature;
-  //       });
-  
-  //       if(feature){
-  //         let coordinates = feature.getGeometry().getCoordinates();
-      
-  //         let title = feature.get('title');
-  //         let content = feature.get('content');
-  
-  //         document.querySelector('#content1').textContent = title;
-  //         document.querySelector('#content2').textContent = content;
-  //         popup.setPosition(coordinates);
-  
-  //         console.log(document.querySelector('.popup-content')); 
-  
-  //       }else{  
-  //         // 마커 밖을 선택하면 레이어 삭제
-  //         popup.setPosition(undefined);
-  //         map.removeLayer(srchLayer);
-  //         map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
-  //       }
-  //     }
-      
-  //     map.on('singleclick', event);
-  //   } 
-  // });
-
   useEffect(() =>{
 
     
-    function getAddresses(){
+    function setSrchLayer(){
 
       map.getLayers().forEach(layer => {
         if (layer.get('name') === 'searchLayer') {
@@ -789,102 +511,15 @@ const Map = ({ children }) => {
         }
     });   
     }
-
-
-    // function getLayer (data) {
-      
-    //   var iconStyle = new Style({
-    //     image: new Icon({
-    //       src:'https://map.vworld.kr/images/ol3/marker_blue.png'
-    //     })
-    //   });
-
-    //   var srchSource = new VectorWMS();
-    //   var srchLayer = new Vector({
-    //     source : srchSource,
-    //     name : 'searchLayer',
-    //   });
-
-    //   if(data.response.status === "NOT_FOUND"){
-    //     // 빈 곳 처리
-    //     // 1. 결과
-    //   }else{
-    //     // 함수 처리
-    //     // 1. 마커
-    //     // 2. 결과
-    //     console.log(data);
-    //     for(var i=0; i<(data.response.result.items).length; i++){
-
-    //       var datalists = data.response.result.items[i];
-
-    //       if(i===0){
-    //         map.getView().setCenter([datalists.point.x*1, datalists.point.y*1]);
-    //         map.getView().setZoom(17);
-    //       }
-
-    //       var marker = new Feature({
-    //         geometry: new Point([datalists.point.x, datalists.point.y]),
-    //         name: "searchedLocation",
-    //         title: datalists.title,
-    //         content: datalists.address.road ? datalists.address.road : datalists.address.parcel,  // 도로명 주소가 있으면 road, 없으면 parcel
-    //       });
-          
-    //       marker.setStyle(iconStyle);
-    //       srchSource.addFeature(marker);
-    //     }
-
-    //     srchLayer.setZIndex(15);
-    //     map.addLayer(srchLayer);
-
-    //     var popup = new Overlay({ 
-    //       element: document.querySelector('.ol-popup'),
-    //       positioning: 'bottom-center',
-    //       stopEvent: false, 
-    //       offset: [0, 0],
-    //     }); 
-      
-    //     map.addOverlay(popup);
-
-    //     function event(evt){
-
-    //       // 클릭된 위치에서 마커 찾기
-    //       var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-    //         return feature;
-    //       });
-
-    //       if(feature){
-    //         var coordinates = feature.getGeometry().getCoordinates();
-        
-    //         var title = feature.get('title');
-    //         var content = feature.get('content');
-
-    //         document.querySelector('#content1').textContent = title;
-    //         document.querySelector('#content2').textContent = content;
-    //         popup.setPosition(coordinates);
-
-    //         console.log(document.querySelector('.popup-content')); 
-
-    //       }else{  
-    //         // 마커 밖을 선택하면 레이어 삭제
-    //         popup.setPosition(undefined);
-    //         map.removeLayer(srchLayer);
-    //         map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
-    //       }
-    //     }
-        
-    //     map.on('singleclick', event);
-    //   } 
-    // }
-
         const searchBtn = document.getElementById('searchBtn');
         
         if(searchBtn){  
-          searchBtn.addEventListener('click', getAddresses);
+          searchBtn.addEventListener('click', setSrchLayer);
         }
 
         return() => {
           if(searchBtn){
-            searchBtn.removeEventListener('click', getAddresses);
+            searchBtn.removeEventListener('click', setSrchLayer);
           }
           if(srchLayer){
             map.removeLayer(srchLayer);
@@ -930,49 +565,6 @@ const Map = ({ children }) => {
     clearInterval(interCheck);    // 언마운트 시 메모리 누수 방지
   }
 },[selectedGrade, prevGrade]);
-
-
-  // return (
-  // <>
-  //   <div className="sidebar">
-  //     <a className="closebtn" onClick={closeMenu}>×</a>
-  //     <a href="#">알림</a>
-  //   </div>
-  //   <div className='ol-popup'>
-  //       <div className='ol-popup-content'>
-  //         <h2 id='content1'></h2>
-  //         <p id='content2'></p>
-  //       </div>
-  //   </div>
-  //   <div className='container'> 
-  //     <nav>
-  //       <div className="nav-container">
-  //         <button className="openbtn" onClick={openMenu}>☰</button>
-  //         <div className="search-container">
-  //           <input type="text" id="searchInput" placeholder="주소 검색..." />
-  //           <button id="searchBtn" onClick={getAddress}>검색</button>
-  //         </div>
-  //         <button className="nav-safe">안전<br />길찾기</button>
-  //       </div>
-  //     </nav>
-
-  //     <main>
-  //       <div className="switch_wrapper">
-  //         <input type="checkbox" id="switch" className="chkbox" onChange={onoffWMS} defaultChecked={false}/>
-  //         <label htmlFor="switch" className="switch_label">
-  //           <span className="btn"></span>
-  //         </label>
-  //       </div>
-  //       <div className="content" style={{width:"100%", height:"100%"}}>
-  //         <MapContext.Provider className="inner" value={mapObj}>
-  //           {children}
-  //         </MapContext.Provider>
-  //       </div>
-  //     <CategoryList></CategoryList>
-  //     </main>
-  //   </div>
-  //   </>
-  // )
 
 return (
   <div className="container">
