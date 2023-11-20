@@ -492,6 +492,154 @@ const Map = ({ children }) => {
     return () => map.setTarget(undefined) // 렌더링 누적 방지 
   }, [])
 
+  const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 state
+  const [searchTerm, setSearchTerm] = useState(""); // 사용자 입력 값을 저장할 state
+
+  // 검색 결과를 처리하는 함수
+  const handleSearchResults = (data) => {
+    if (data.response.status !== "NOT_FOUND" && data.response.result) {
+      setSearchResults(data.response.result.items); // 검색 결과를 state에 저장
+      getLayer(data);
+    } else {
+      setSearchResults([]); // 결과가 없으면 빈 배열로 설정
+    }
+  };
+
+  // 검색창에 입력할 때 호출될 함수
+  const handleSearchChange = (event) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm); // 사용자 입력값을 state에 저장
+
+    if (newSearchTerm.length > 2) {
+      // 최소 글자 수를 기준으로 검색 시작
+      getAddress(newSearchTerm, handleSearchResults); // 검색 함수 호출
+    } else {
+      setSearchResults([]); // 글자 수가 부족하면 결과를 비움
+    }
+  };
+
+  // 검색 API 호출 함수 수정
+  const getAddress = (query, callback) => {
+    // API 호출
+    $.ajax({
+      url: "https://api.vworld.kr/req/search?",
+      type: "GET",
+      dataType: "jsonp",
+      data: {
+        service: "search",
+        request: "search",
+        version: "2.0",
+        crs: "EPSG:900913",
+        size: "20",
+        page: "1",
+        query: query, // 사용자 입력을 query로 사용
+        type: "place",
+        format: "json",
+        errorformat: "json",
+        key: mapKey,
+      },
+      success: function (data) {
+        callback(data); // 콜백 함수를 통해 결과 처리
+      },
+    });
+  };
+
+  function getLayer (data) {
+      
+    var iconStyle = new Style({
+      image: new Icon({
+        src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+      })
+    });
+
+    var srchSource = new VectorWMS();
+    var srchLayer = new Vector({
+      source : srchSource,
+      name : 'searchLayer',
+    });
+
+    if(data.response.status === "NOT_FOUND"){
+      // 빈 곳 처리
+      // 1. 결과
+    }else{
+      // 함수 처리
+      // 1. 마커
+      // 2. 결과
+      console.log(data);
+      for(var i=0; i<(data.response.result.items).length; i++){
+
+        var datalists = data.response.result.items[i];
+
+        if(i===0){
+          map.getView().setCenter([datalists.point.x*1, datalists.point.y*1]);
+          map.getView().setZoom(17);
+        }
+
+        var marker = new Feature({
+          geometry: new Point([datalists.point.x, datalists.point.y]),
+          name: "searchedLocation",
+          title: datalists.title,
+          content: datalists.address.road ? datalists.address.road : datalists.address.parcel,  // 도로명 주소가 있으면 road, 없으면 parcel
+        });
+        
+        marker.setStyle(iconStyle);
+        srchSource.addFeature(marker);
+      }
+
+      srchLayer.setZIndex(15);
+      map.addLayer(srchLayer);
+
+      var popup = new Overlay({ 
+        element: document.querySelector('.ol-popup'),
+        positioning: 'bottom-center',
+        stopEvent: false, 
+        offset: [0, 0],
+      }); 
+    
+      map.addOverlay(popup);
+
+      function event(evt){
+
+        // 클릭된 위치에서 마커 찾기
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+          return feature;
+        });
+
+        if(feature){
+          var coordinates = feature.getGeometry().getCoordinates();
+      
+          var title = feature.get('title');
+          var content = feature.get('content');
+
+          document.querySelector('#content1').textContent = title;
+          document.querySelector('#content2').textContent = content;
+          popup.setPosition(coordinates);
+
+          console.log(document.querySelector('.popup-content')); 
+
+        }else{  
+          // 마커 밖을 선택하면 레이어 삭제
+          popup.setPosition(undefined);
+          map.removeLayer(srchLayer);
+          map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
+        }
+      }
+      
+      map.on('singleclick', event); 
+    } 
+  }
+
+  
+
+  // 검색 결과 중 하나를 클릭했을 때 호출될 함수
+  const handleResultSelect = (item) => {
+    const coords = ([parseFloat(item.point.x),parseFloat(item.point.y)]);
+    map.getView().setCenter(coords);
+    map.getView().setZoom(17);
+    setSearchResults([]); // 선택 후 검색 결과 비우기
+    setSearchTerm(item.title); // 검색창에 선택된 주소 표시
+  };
+
   // // const getAddress = useCallback(() => {
     
   // //   $.ajax({  // ADDRESS 
@@ -605,7 +753,7 @@ const Map = ({ children }) => {
   useEffect(() =>{
 
     
-    function getAddress(){
+    function getAddresses(){
 
       map.getLayers().forEach(layer => {
         if (layer.get('name') === 'searchLayer') {
@@ -639,100 +787,100 @@ const Map = ({ children }) => {
     }
 
 
-    function getLayer (data) {
+    // function getLayer (data) {
       
-      var iconStyle = new Style({
-        image: new Icon({
-          src:'https://map.vworld.kr/images/ol3/marker_blue.png'
-        })
-      });
+    //   var iconStyle = new Style({
+    //     image: new Icon({
+    //       src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+    //     })
+    //   });
 
-      var srchSource = new VectorWMS();
-      var srchLayer = new Vector({
-        source : srchSource,
-        name : 'searchLayer',
-      });
+    //   var srchSource = new VectorWMS();
+    //   var srchLayer = new Vector({
+    //     source : srchSource,
+    //     name : 'searchLayer',
+    //   });
 
-      if(data.response.status === "NOT_FOUND"){
-        // 빈 곳 처리
-        // 1. 결과
-      }else{
-        // 함수 처리
-        // 1. 마커
-        // 2. 결과
-        console.log(data);
-        for(var i=0; i<(data.response.result.items).length; i++){
+    //   if(data.response.status === "NOT_FOUND"){
+    //     // 빈 곳 처리
+    //     // 1. 결과
+    //   }else{
+    //     // 함수 처리
+    //     // 1. 마커
+    //     // 2. 결과
+    //     console.log(data);
+    //     for(var i=0; i<(data.response.result.items).length; i++){
 
-          var datalists = data.response.result.items[i];
+    //       var datalists = data.response.result.items[i];
 
-          if(i===0){
-            map.getView().setCenter([datalists.point.x*1, datalists.point.y*1]);
-            map.getView().setZoom(17);
-          }
+    //       if(i===0){
+    //         map.getView().setCenter([datalists.point.x*1, datalists.point.y*1]);
+    //         map.getView().setZoom(17);
+    //       }
 
-          var marker = new Feature({
-            geometry: new Point([datalists.point.x, datalists.point.y]),
-            name: "searchedLocation",
-            title: datalists.title,
-            content: datalists.address.road ? datalists.address.road : datalists.address.parcel,  // 도로명 주소가 있으면 road, 없으면 parcel
-          });
+    //       var marker = new Feature({
+    //         geometry: new Point([datalists.point.x, datalists.point.y]),
+    //         name: "searchedLocation",
+    //         title: datalists.title,
+    //         content: datalists.address.road ? datalists.address.road : datalists.address.parcel,  // 도로명 주소가 있으면 road, 없으면 parcel
+    //       });
           
-          marker.setStyle(iconStyle);
-          srchSource.addFeature(marker);
-        }
+    //       marker.setStyle(iconStyle);
+    //       srchSource.addFeature(marker);
+    //     }
 
-        srchLayer.setZIndex(15);
-        map.addLayer(srchLayer);
+    //     srchLayer.setZIndex(15);
+    //     map.addLayer(srchLayer);
 
-        var popup = new Overlay({ 
-          element: document.querySelector('.ol-popup'),
-          positioning: 'bottom-center',
-          stopEvent: false, 
-          offset: [0, 0],
-        }); 
+    //     var popup = new Overlay({ 
+    //       element: document.querySelector('.ol-popup'),
+    //       positioning: 'bottom-center',
+    //       stopEvent: false, 
+    //       offset: [0, 0],
+    //     }); 
       
-        map.addOverlay(popup);
+    //     map.addOverlay(popup);
 
-        function event(evt){
+    //     function event(evt){
 
-          // 클릭된 위치에서 마커 찾기
-          var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-            return feature;
-          });
+    //       // 클릭된 위치에서 마커 찾기
+    //       var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+    //         return feature;
+    //       });
 
-          if(feature){
-            var coordinates = feature.getGeometry().getCoordinates();
+    //       if(feature){
+    //         var coordinates = feature.getGeometry().getCoordinates();
         
-            var title = feature.get('title');
-            var content = feature.get('content');
+    //         var title = feature.get('title');
+    //         var content = feature.get('content');
 
-            document.querySelector('#content1').textContent = title;
-            document.querySelector('#content2').textContent = content;
-            popup.setPosition(coordinates);
+    //         document.querySelector('#content1').textContent = title;
+    //         document.querySelector('#content2').textContent = content;
+    //         popup.setPosition(coordinates);
 
-            console.log(document.querySelector('.popup-content')); 
+    //         console.log(document.querySelector('.popup-content')); 
 
-          }else{  
-            // 마커 밖을 선택하면 레이어 삭제
-            popup.setPosition(undefined);
-            map.removeLayer(srchLayer);
-            map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
-          }
-        }
+    //       }else{  
+    //         // 마커 밖을 선택하면 레이어 삭제
+    //         popup.setPosition(undefined);
+    //         map.removeLayer(srchLayer);
+    //         map.un('singleclick', event); // 다른 함수 호출에 이벤트 중복 방지
+    //       }
+    //     }
         
-        map.on('singleclick', event);
-      } 
-    }
+    //     map.on('singleclick', event);
+    //   } 
+    // }
 
         const searchBtn = document.getElementById('searchBtn');
         
         if(searchBtn){  
-          searchBtn.addEventListener('click', getAddress);
+          searchBtn.addEventListener('click', getAddresses);
         }
 
         return() => {
           if(searchBtn){
-            searchBtn.removeEventListener('click', getAddress);
+            searchBtn.removeEventListener('click', getAddresses);
           }
           if(srchLayer){
             map.removeLayer(srchLayer);
@@ -827,17 +975,36 @@ return (
     <nav>
       <div className="nav-container">
         <div className="search-container">
-          <div id="popup" className="ol-popup">
+        <div id="popup" className="ol-popup">
             <div id="popup-content" className="ol-popup-content">
               <h2 id='content1'></h2>
               <p id='content2'></p>
+              </div>
             </div>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="주소 검색..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            {/* 검색 버튼은 입력 필드와 연결된 함수를 트리거하기 위해 남겨둘 수 있습니다. */}
+            <button
+              id="searchBtn"
+              onClick={() => getAddress(searchTerm, handleSearchResults)}
+            >
+              검색
+            </button>
+            {searchResults.length > 0 && (
+              <ul id="searchResults">
+                {searchResults.map((item, index) => (
+                  <li key={index} onClick={() => handleResultSelect(item)}>
+                    {item.title} ({item.address.road})
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          <input type="text" id="searchInput" placeholder="주소 검색..." />
-          <button id="searchBtn">
-            검색
-          </button>
-        </div>
         <button className="nav-safe">
           안전
           <br />
