@@ -31,10 +31,23 @@ const CategoryList = () => {
     [safePlaces[2]]:false,
   }
   const [checkedStates, setCheckedStates] = useState(initialCheckedStates); // 체크 상태를 저장할 상태 추가
+  const [isPlaying, setIsPlaying] = useState(false); // 경고음 재생 상태
+  const [audio] = useState(new Audio(process.env.PUBLIC_URL+"/siren.mp3")); // 오디오 객체 생성
 
   const [cnvLayer, setCnvLayer] = useState(null);
   const [fireLayer, setFireLayer] = useState(null);
   const [safeLayer, setSafeLayer] = useState(null);
+
+  // 경고음 재생/중지 토글 함수
+  const toggleSound = () => {
+    if (isPlaying) {
+      audio.pause();
+      audio.currentTime = 0; // 소리를 처음부터 다시 시작하게 하려면 이 줄을 추가하세요.
+    } else {
+      audio.play().catch((e) => console.error("Playback failed:", e));
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   useEffect(() => {
     const cnvSource = new TileWMS({
@@ -163,10 +176,9 @@ const handleCheckChange = (event) => {
           >
             긴급전화
           </button>
-          <button className="category-item" id="warning" onClick={warnSound}>
-            경고음
+          <button className="category-item" id="warning" onClick={toggleSound}>
+            {isPlaying ? "경고음 중지" : "경고음 재생"}
           </button>
-          <audio id="alertSound" src={process.env.PUBLIC_URL + '/siren.mp3'} preload="auto"></audio>
         </div>
       </div>
     </section>
