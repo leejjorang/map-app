@@ -574,7 +574,7 @@ return (
             <img
             src={process.env.PUBLIC_URL + '/blackbell.png'}
             alt='알림설정'
-            style={{width:'2.5rem', height:'2.5rem'}}>
+            style={{width:'3rem', height:'3rem'}}>
             </img>
           </button>
 

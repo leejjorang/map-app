@@ -154,7 +154,7 @@ const handleCheckChange = (event) => {
             onClose={() => setIsModalOpen(false)}
             position={modalPosition}
           >
-            <ul>
+            <ul style={{listStyle:'none'}}>
               {safePlaces.map((place) => (
                 <li key={place}>
                   <input
@@ -164,7 +164,7 @@ const handleCheckChange = (event) => {
                     checked={checkedStates[place] || false}
                     onChange={handleCheckChange}
                   />
-                  <label htmlFor={`checkbox-${place}`}>{place}</label>
+                  <label htmlFor={`checkbox-${place}`} style={{paddingLeft:'0.2rem', fontSize:'1.25rem'}}>{place}</label>
                 </li>
               ))}
             </ul>
