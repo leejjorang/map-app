@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import MapContext from './MapContext'
 import CategoryList from '../Feature/CategoryList.js';
 import { getGrade } from '../Feature/GetGrade.js';
 import 'ol/ol.css'
 import './Map.css'
 import { Map as OlMap, View, Feature, Overlay } from 'ol'
-import { defaults as defaultControls, FullScreen, ScaleLine, Zoom, ZoomSlider } from 'ol/control'
+import { defaults as defaultControls, FullScreen, ScaleLine, Zoom } from 'ol/control'
 import { fromLonLat, get as getProjection } from 'ol/proj'
 import { Tile as TileLayer, Vector, Marker } from 'ol/layer'
 import { XYZ, TileWMS, Vector as VectorWMS } from 'ol/source'
 import { Style, Circle, Fill, Stroke, Icon } from 'ol/style'
 import { Point, LineString } from 'ol/geom'
 import { DragRotateAndZoom, defaults as defaultInteractions} from 'ol/interaction'
-import $, { get } from 'jquery';
+import $ from 'jquery';
 
 //import {fetchData} from './FetchData.js';
 //FetchData.js - 원하는 데이터 추출 파일 (현재는 return값 지정x)
@@ -76,44 +76,6 @@ function initMap(){
   });
 }
 
-
-// const satelliteMap = new TileLayer({  
-//   name: 'Satellite',
-//   visible: true,
-//   source: new XYZ({
-//     url: `http://api.vworld.kr/req/wmts/1.0.0/${mapKey}/Satellite/{z}/{y}/{x}.jpeg`  
-//   })
-// });
-
-// const handleSatelliteMapButton = () => {
-//   map.addLayer(satelliteMap);
-//   // or
-//   map.removeLayer(satelliteMap)
-// }
-
-// const hybridMap = new TileLayer({
-//   name: 'Hybrid',
-//   visible: true,
-//   source: new XYZ({
-//     url: `http://api.vworld.kr/req/wmts/1.0.0/${mapKey}/Hybrid/{z}/{y}/{x}.png`
-//   })
-// });
-
-// const handleHybridButtonClick = () => {
-//   map.addLayer(hybridMap);
-//   // or
-//   map.removeLayer(hybridMap);
-// };
-
-const handleZoomInClick = () => {
-  const zoom = map.getView().getZoom() + 1;
-  map.getView().setView(zoom);
-};
-
-const handleZoomOutClick = () => {
-  const zoom = map.getView().getZoom() - 1;
-  map.getView().setView(zoom);
-};
 
 // 3. 현 위치
 
@@ -301,17 +263,6 @@ map.addLayer(vector);
 
  }
 
-
-function openMenu() {
-  document.querySelector('.sidebar').style.width = "250px";
-  document.querySelector('.openbtn').style.display = 'none';
-}
-
-function closeMenu() { 
-  document.querySelector('.sidebar').style.width = "0";
-  document.querySelector('.openbtn').style.display = 'block';
-}
-
 const Map = ({ children }) => {
   const [mapObj, setMapObj] = useState({});
   const [srchLayer, setSrchLayer] = useState(null);
@@ -479,7 +430,7 @@ const Map = ({ children }) => {
   useEffect(() =>{
 
     
-    function setSrchLayer(){
+    function srchLayer(){
 
       map.getLayers().forEach(layer => {
         if (layer.get('name') === 'searchLayer') {
@@ -514,12 +465,12 @@ const Map = ({ children }) => {
         const searchBtn = document.getElementById('searchBtn');
         
         if(searchBtn){  
-          searchBtn.addEventListener('click', setSrchLayer);
+          searchBtn.addEventListener('click', srchLayer);
         }
 
         return() => {
           if(searchBtn){
-            searchBtn.removeEventListener('click', setSrchLayer);
+            searchBtn.removeEventListener('click', srchLayer);
           }
           if(srchLayer){
             map.removeLayer(srchLayer);
@@ -552,14 +503,14 @@ const Map = ({ children }) => {
 
   if(selectedGrade>0 && selectedGrade !== '0'){  // 확인 후 변경 (값을 선택 + 알림 안 받음 선택 default를 알림 안 받음으로 선택 후 수정)
     interCheck = setInterval(() => {
-    grade = Math.floor(Math.random()*2 )+3; //getGrade(currentLoc)
+    grade =  getGrade(currentLoc);   //Math.floor(Math.random()*2 )+3; 3or4
     console.log(grade);
     setPrevGrade(grade);
     if(selectedGrade > 0 && selectedGrade < grade && prevGrade !== grade){
       console.log('알림 실행 : 사용자가 선택 + 선택 값보다 큰 등급 + 등급의 변화 ');
       const message = {key1:'NOTIFICATION', key2:`${grade}`};
       window.ReactNativeWebView.postMessage(JSON.stringify(message));
-  }}, 2000)};
+  }}, 5000)};
 
   return() => {
     clearInterval(interCheck);    // 언마운트 시 메모리 누수 방지

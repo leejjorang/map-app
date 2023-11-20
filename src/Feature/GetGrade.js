@@ -23,7 +23,7 @@ export function getGrade(Loc){
 		    })
 		    .catch((error) => {   // 에러 or 범죄 주의 구간을 벗어난 경우 ( ex. 건물 안)
                 //console.log("error: ",error);
-                grade = "";
+                grade = '0';
 		    });
 	    };
     fetchGrade();
