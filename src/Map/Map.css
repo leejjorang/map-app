@@ -41,7 +41,6 @@ nav {
 }
 
 .nav-container {
-  position: relative;
   width: 100%;
   height: 100%;
   padding: 2rem 0;
@@ -122,7 +121,6 @@ body {
 */
 
 nav {
-  position: relative;
   height: 59px;
 }
 
@@ -218,7 +216,7 @@ main {
 .switch_label{
   position: relative;
   width: 48px;
-  height: 25px;
+  height: 24px;
   background-color: white;
   display: inline-block;
   border: 2px solid rgb(245, 200, 193);
@@ -343,4 +341,32 @@ main {
 
   .openbtn:hover {
   background-color: #444;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    position: absolute;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .ol-zoom.ol-unselectable.ol-control{
+    top:unset;
+    left: unset;
+    position :absolute;
+    right: .5rem;
+    bottom: .5rem;
   }
