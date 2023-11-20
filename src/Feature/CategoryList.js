@@ -166,7 +166,7 @@ const handleCheckChange = (event) => {
           <button className="category-item" id="warning" onClick={warnSound}>
             경고음
           </button>
-          <audio id="alertSound" src="alert.mp3" preload="auto"></audio>
+          <audio id="alertSound" src={process.env.PUBLIC_URL + '/siren.mp3'} preload="auto"></audio>
         </div>
       </div>
     </section>

@@ -771,7 +771,7 @@ const Map = ({ children }) => {
     if(selectedGrade > 0 && selectedGrade < grade && prevGrade !== grade){
       console.log('알림 실행 : 사용자가 선택 + 선택 값보다 큰 등급 + 등급의 변화 ');
       const message = {key:'NOTIFICATION'};
-      window.ReactNativeWebView.postMessage(JSON.stringify(message));
+      //window.ReactNativeWebView.postMessage(JSON.stringify(message));
   }}, 2000)};
 
   return() => {
@@ -855,7 +855,7 @@ return (
           <button
             onClick={toggleNotificationDropdown}
             className="notification-settings-btn"
-            style={{ position: "absolute", top: "0.4rem", left: "0.3rem", border:'none' }} // 버튼 위치 조정
+            style={{ position: "absolute", top: "0.4rem", left: "0.3rem", border:'none', backgroundColor:'transparent' }} // 버튼 위치 조정
           >
             <img
             src={process.env.PUBLIC_URL + '/blackbell.png'}
