@@ -159,6 +159,8 @@ function getCurrentLocation(){
     .then(data => {
   
       const coords = [];
+      
+      coords.push(start_x, start_y)
   
       for(var i=0; i<(data.route).length; i++){
   
@@ -192,7 +194,7 @@ function getCurrentLocation(){
       });
     
       let srcMarker = new Feature({
-        geometry: new Point([data.route[0].X, data.route[1].Y]),
+        geometry: new Point([start_x, start_y]),
         name: "source",
       });
   
