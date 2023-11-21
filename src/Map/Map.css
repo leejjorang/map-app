@@ -392,6 +392,7 @@ main {
 
 .button-container{
   height: 100%;
+  width: 1.5rem;
 }
 
 .button-container button {
