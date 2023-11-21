@@ -392,12 +392,13 @@ main {
 
 .button-container{
   height: 100%;
-  width: 1.5rem;
+  width: 3rem;
 }
 
 .button-container button {
   height: 100%;
-  font-size: 1.2rem;
+  width: 100%;
+  font-size: 1rem;
   padding: 0.1rem;
 }
 
