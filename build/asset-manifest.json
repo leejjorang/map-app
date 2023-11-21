@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/map-app/static/css/main.87ea201c.css",
+    "main.css": "/map-app/static/css/main.895749a6.css",
     "main.js": "/map-app/static/js/main.2f43aa0b.js",
     "static/js/787.2308ae64.chunk.js": "/map-app/static/js/787.2308ae64.chunk.js",
     "index.html": "/map-app/index.html",
-    "main.87ea201c.css.map": "/map-app/static/css/main.87ea201c.css.map",
+    "main.895749a6.css.map": "/map-app/static/css/main.895749a6.css.map",
     "main.2f43aa0b.js.map": "/map-app/static/js/main.2f43aa0b.js.map",
     "787.2308ae64.chunk.js.map": "/map-app/static/js/787.2308ae64.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.87ea201c.css",
+    "static/css/main.895749a6.css",
     "static/js/main.2f43aa0b.js"
   ]
 }
