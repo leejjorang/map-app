@@ -311,10 +311,9 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
     }
 
     let dstIconStyle = new Style({
-      image: new Circle({
-        radius: 6,
-        fill: new Fill({color: 'red'}),
-        stroke: new Stroke({color: 'white', width: 3})
+      image: new Icon({
+        src : process.env.PUBLIC_URL + '/pin_mark.png',
+        scale : 0.07,
       })
     });
   
@@ -324,10 +323,9 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
     });
   
     let srcIconStyle= new Style({
-      image: new Circle({
-        radius: 6,
-        fill: new Fill({color: 'blue'}),
-        stroke: new Stroke({color: 'white', width: 3})
+      image: new Icon({
+        src : process.env.PUBLIC_URL + '/pin_mark.png',
+        scale : 0.07,
       })
     });
   
@@ -561,6 +559,7 @@ const Map = ({ children }) => {
         positioning: 'bottom-center',
         stopEvent: false, 
         offset: [0, 0],
+        name: 'popup',
       }); 
     
       map.addOverlay(popup);
@@ -598,17 +597,17 @@ const Map = ({ children }) => {
 
   // 검색 결과 중 하나를 클릭했을 때 호출될 함수
   const handleResultSelect = (item) => {
+    map.getLayers().forEach(layer => {
+      if (layer.get('name') === ('searchLayer' || 'popup')) {
+        map.removeLayer(layer);
+      }
+    });
     const coords = ([parseFloat(item.point.x),parseFloat(item.point.y)]);
     map.getView().setCenter(coords);
     map.getView().setZoom(17);
     setSearchResults([]); // 선택 후 검색 결과 비우기
     setSearchTerm(item.title); // 검색창에 선택된 주소 표시
     fetchtest(coords);
-    map.getLayers().forEach(layer => {
-      if (layer.get('name') === 'searchLayer') {
-        map.removeLayer(layer);
-      }
-    });
   };
 
   useEffect(() =>{
@@ -687,8 +686,7 @@ const Map = ({ children }) => {
 
   if(selectedGrade>0 && selectedGrade !== '0'){  // 확인 후 변경 (값을 선택 + 알림 안 받음 선택 default를 알림 안 받음으로 선택 후 수정)
     interCheck = setInterval(() => {
-    grade =  getGrade(currentLoc);   //Math.floor(Math.random()*2 )+3; 3or4
-    console.log(grade);
+    grade =  (getGrade(currentLoc)-1);   //Math.floor(Math.random()*2 )+3; 3or4
     setPrevGrade(grade);
     if(selectedGrade > 0 && selectedGrade < grade && prevGrade !== grade){
       console.log('알림 실행 : 사용자가 선택 + 선택 값보다 큰 등급 + 등급의 변화 ');
