@@ -344,7 +344,8 @@ main {
   padding: 0 0.5rem;
   position: absolute; /* 절대 위치 */
   top: 0px; /* 상단에서의 위치 */
-  left: 0px; /* 왼쪽에서의 위치 */
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000; /* 다른 요소 위에 표시 */
   display: flex;
   background-color: white;
