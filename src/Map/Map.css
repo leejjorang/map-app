@@ -57,12 +57,12 @@ nav {
 .nav-safe {
   position : absolute;
   right: 0;
-  width: 7rem;
+  width: 6rem;
   font-size: 1.5rem;
   border: 0;
   cursor: pointer;
   font-family: inherit;
-  background-color: white;
+  background-color: transparent;
 }
 
 .nav-safe:hover {
@@ -340,6 +340,7 @@ main {
   }
 
 .search-bar-container {
+  height: 3rem;
   position: absolute; /* 절대 위치 */
   top: 0px; /* 상단에서의 위치 */
   left: 0px; /* 왼쪽에서의 위치 */
@@ -348,21 +349,20 @@ main {
   background-color: white;
   flex-direction: row; /* 가로 방향으로 배열 */
   align-items: center; /* 세로 중앙 정렬 */
-  gap: 10px; /* 요소들 사이 간격 */
+  gap: 0.5rem; /* 요소들 사이 간격 */
 }
 
 .search-bar {
   display: flex;
   flex-direction: column;
   background-color: white;
-  padding: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar input {
-  width: 200px; /* 입력란의 너비 */
+  width: 17rem; /* 입력란의 너비 */
   padding: 5px; /* 입력란 내부의 패딩 */
-  margin-bottom: 5px; /* 입력란 아래의 여백 */
+  margin-bottom: 2px; /* 입력란 아래의 여백 */
 }
 
 /* 자동완성 목록을 별도의 컨테이너로 분리 */
@@ -375,7 +375,7 @@ main {
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto; /* 넘치면 스크롤 */
-  max-height: 200px; /* 최대 높이 설정 */
+  max-height: 25rem; /* 최대 높이 설정 */
 }
 
 .search-bar div {
@@ -386,6 +386,14 @@ main {
 
 .search-bar div:hover {
   background-color: #ddd; /* 마우스 오버시 배경색 변경 */
+}
+
+.button-container{
+  height: 100%;
+}
+
+.button-container button {
+  height: 100%;
 }
 
 /*

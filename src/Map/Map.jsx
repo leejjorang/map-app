@@ -673,6 +673,7 @@ return (
                 </div>
 
                 {/* 검색 버튼 */}
+                <div className='button-container'>
                 <button
                   onClick={() => {
                     searchAddress(startAddress, "start");
@@ -682,6 +683,7 @@ return (
                 >
                   검색
                 </button>
+                </div>
               </div>
             )}
 
