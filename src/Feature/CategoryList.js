@@ -1,22 +1,15 @@
 import React, {useState, useContext, useEffect} from 'react';
 import Modal from "./Modal"; // 모달 컴포넌트 임포트
 import { Tile as TileLayer } from 'ol/layer'
-import { TileWMS, Vector as VectorWMS } from 'ol/source'
+import { TileWMS } from 'ol/source'
 import MapContext from '../Map/MapContext';
 
 const safeKey = process.env.REACT_APP_SAFE_KEY;
-const mapKey = process.env.REACT_APP_MAP_KEY;
 
 // 다른 필요한 함수들
 function callEmergency() {
   window.location.href = "tel:112";
 }
-
-function warnSound() {
-  let sound = document.getElementById("alertSound");
-  sound.play();
-}
-
 
 // CategoryList 컴포넌트
 const CategoryList = () => {

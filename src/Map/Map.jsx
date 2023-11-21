@@ -14,10 +14,6 @@ import { Point, LineString } from 'ol/geom'
 import { DragRotateAndZoom, defaults as defaultInteractions} from 'ol/interaction'
 import $ from 'jquery';
 
-//import {fetchData} from './FetchData.js';
-//FetchData.js - 원하는 데이터 추출 파일 (현재는 return값 지정x)
-//fetchData(); - 추출
-
 const safeKey = process.env.REACT_APP_SAFE_KEY;
 const mapKey = process.env.REACT_APP_MAP_KEY;
 
@@ -87,10 +83,9 @@ function updateMap(position){
 
     if (!currentMarker) {
       var iconStyle = new Style({
-        image: new Circle({
-          radius: 6,
-          fill: new Fill({color: 'blue'}),
-          stroke: new Stroke({color: 'white', width: 3})
+        image: new Icon({
+          src : process.env.PUBLIC_URL + '/pin_mark_pink.png',
+          scale : 0.07,
         })
       });
 
@@ -133,18 +128,22 @@ function getCurrentLocation(){
     }
   }
 
-  function fetchtest(dstPoint){
+  // 5. 경로
+  
+  let sttPoint, dstPoint;
+
+  function fetchtest(sttPoint, dstPoint){
 
     const dstSource = new VectorWMS();
     let dstLayer = new Vector({
       source : dstSource,
       name : 'dstLayer'
     });
-  
-  const start_x = 14377898.964024764;
-  const start_y = 4186136.484549115;
-  const arrive_x = dstPoint[0];
-  const arrive_y = dstPoint[1];
+
+  const start_x = parseFloat(sttPoint.x); 
+  const start_y = parseFloat(sttPoint.y);
+  const arrive_x = parseFloat(dstPoint.x);
+  const arrive_y = parseFloat(dstPoint.y);
   
   fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
       method: 'POST',
@@ -197,12 +196,6 @@ function getCurrentLocation(){
         name: "source",
       });
   
-      dstMarker.setStyle(dstIconStyle);
-      dstSource.addFeature(dstMarker);
-      srcMarker.setStyle(srcIconStyle);
-      dstSource.addFeature(srcMarker);
-      map.addLayer(dstLayer);
-  
     let path = [];
     for(let i = 0; i < coords.length; i+=2) {
     path.push([coords[i], coords[i + 1]]);
@@ -221,9 +214,13 @@ function getCurrentLocation(){
         lineJoin: 'round',
       })
     }))
-    dstSource.addFeature(feature);
-    dstMarker.setStyle(dstIconStyle);
 
+    dstMarker.setStyle(dstIconStyle);
+    srcMarker.setStyle(srcIconStyle);
+    dstSource.addFeature(dstMarker);
+    dstSource.addFeature(srcMarker);
+    dstSource.addFeature(feature);
+    
     dstLayer.setZIndex(2);
     map.addLayer(dstLayer);
   
@@ -232,20 +229,24 @@ function getCurrentLocation(){
       console.error('Error:', error);
     });
   }
-  
 
 
 const Map = ({ children }) => {
   const [mapObj, setMapObj] = useState({});
   const [srchLayer, setSrchLayer] = useState(null);
 
+  // 검색바 표시 상태
+  const [showSearchBars, setShowSearchBars] = useState(false);
+
+  const handleSafeRouteClick = () => {
+    setShowSearchBars(!showSearchBars); // 상태 토글
+  };
+
   useEffect(() => { 
     //Map 객체 생성 및 vworld 지도 설정
 
     initMap();
     onoffWMS(); 
-
-  
 
     //route();
     //fetchtest();
@@ -256,15 +257,31 @@ const Map = ({ children }) => {
 
   const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 state
   const [searchTerm, setSearchTerm] = useState(""); // 사용자 입력 값을 저장할 state
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   // 검색 결과를 처리하는 함수
   const handleSearchResults = (data) => {
     if (data.response.status !== "NOT_FOUND" && data.response.result) {
       setSearchResults(data.response.result.items); // 검색 결과를 state에 저장
+      setShowSearchResults(true); // 검색 결과 창 표시
     } else {
       setSearchResults([]); // 결과가 없으면 빈 배열로 설정
+      setShowSearchResults(false); // 검색 결과 창 숨김
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest("#searchResults")) {
+        setShowSearchResults(false);
+      }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   // 검색창에 입력할 때 호출될 함수
   const handleSearchChange = (event) => {
@@ -321,8 +338,7 @@ const Map = ({ children }) => {
     });
 
     if(data.response.status === "NOT_FOUND"){
-      // 빈 곳 처리
-      // 1. 결과
+      return;
     }else{
       // 함수 처리
       // 1. 마커
@@ -410,12 +426,9 @@ const Map = ({ children }) => {
     map.getView().setZoom(17);
     setSearchResults([]); // 선택 후 검색 결과 비우기
     setSearchTerm(item.title); // 검색창에 선택된 주소 표시
-    fetchtest(coords);
-
   };
 
   useEffect(() =>{
-
     
     function srchLayer(){
 
@@ -503,6 +516,61 @@ const Map = ({ children }) => {
   }
 },[selectedGrade, prevGrade]);
 
+// 출발지와 도착지 주소 검색을 위한 상태
+const [startAddress, setStartAddress] = useState("");
+const [endAddress, setEndAddress] = useState("");
+const [startSuggestions, setStartSuggestions] = useState([]);
+const [endSuggestions, setEndSuggestions] = useState([]);
+
+// 주소 검색 함수
+const searchAddress = async (address, type) => {
+  try {
+    const response = await $.ajax({
+      url: "https://api.vworld.kr/req/search?",
+      type: "GET",
+      dataType: "jsonp",
+      data: {
+        service: "search",
+        request: "search",
+        version: "2.0",
+        crs: "EPSG:900913",
+        size: "20",
+        page: "1",
+        query: address,
+        type: "place",
+        format: "json",
+        errorformat: "json",
+        key: mapKey,
+      },
+    });
+
+    if (response.response.result && response.response.result.items) {
+      if (type === "start") {
+        setStartSuggestions(response.response.result.items);
+      } else {
+        setEndSuggestions(response.response.result.items);
+      }
+    } else {
+      console.log("검색 결과가 없습니다.");
+      // 검색 결과가 없는 경우에 대한 처리
+    }
+  } catch (error) {
+    console.error("검색 중 오류 발생:", error);
+    // 오류 처리
+  }
+};
+
+// 출발지와 도착지 입력란 변경 핸들러
+const handleAddressChange = (value, type) => {
+  if (type === "start") {
+    setStartAddress(value);
+    searchAddress(value, type);
+  } else {
+    setEndAddress(value);
+    searchAddress(value, type);
+  }
+};
+
 return (
   <div className="container">
     <nav>
@@ -528,7 +596,7 @@ return (
             >
               검색
             </button>
-            {searchResults.length > 0 && (
+            {showSearchResults && searchResults.length > 0 && (
               <ul id="searchResults">
                 {searchResults.map((item, index) => (
                   <li key={index} onClick={() => handleResultSelect(item)}>
@@ -538,7 +606,7 @@ return (
               </ul>
             )}
           </div>
-        <button className="nav-safe">
+          <button className="nav-safe" onClick={handleSafeRouteClick}>
           안전
           <br />
           길찾기
@@ -551,14 +619,80 @@ return (
         <MapContext.Provider className="inner" value={mapObj}>
           {children}
 
+          {/* 검색바 조건부 렌더링 - 지도 내부로 이동 */}
+          {showSearchBars && (
+              <div className="search-bar-container">
+                {/* 출발지 검색바 */}
+                <div className="search-bar">
+                  <input
+                    type="text"
+                    value={startAddress}
+                    onChange={(e) =>
+                      handleAddressChange(e.target.value, "start")
+                    }
+                    placeholder="출발지"
+                  />
+                  <div className="autocomplete-container">
+                    {startSuggestions.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setStartAddress(item.address.road);
+                          sttPoint = item.point;
+                          setStartSuggestions([]);
+                        }}
+                      >
+                        {item.address.road}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 도착지 검색바 */}
+                <div className="search-bar">
+                  <input
+                    type="text"
+                    value={endAddress}
+                    onChange={(e) => handleAddressChange(e.target.value, "end")}
+                    placeholder="도착지"
+                  />
+                  <div className="autocomplete-container">
+                    {endSuggestions.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setEndAddress(item.address.road);
+                          dstPoint = item.point;
+                          setEndSuggestions([]);
+                        }}
+                      >
+                        {item.address.road}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 검색 버튼 */}
+                <button
+                  onClick={() => {
+                    searchAddress(startAddress, "start");
+                    searchAddress(endAddress, "end");
+                    fetchtest(sttPoint, dstPoint);
+                  }}
+                >
+                  검색
+                </button>
+              </div>
+            )}
+
           {/* 지도 컨테이너 내에 버튼 추가 */}
           <button
             onClick={toggleNotificationDropdown}
             className="notification-settings-btn"
-            style={{ position: "absolute", top: "0.4rem", left: "0.3rem", border:'none', backgroundColor:'transparent' }} // 버튼 위치 조정
+            style={{ position: "absolute", top: "0.4rem", left: "0.3rem", border:'none', backgroundColor:'transparent' }}
           >
             <img
-            src={process.env.PUBLIC_URL + '/blackbell.png'}
+            src={process.env.PUBLIC_URL + '/redbell.png'}
             alt='알림설정'
             style={{width:'3rem', height:'3rem'}}>
             </img>

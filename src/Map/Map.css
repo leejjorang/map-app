@@ -57,7 +57,7 @@ nav {
 .nav-safe {
   position : absolute;
   right: 0;
-  width: 50px;
+  width: 7rem;
   font-size: 1.5rem;
   border: 0;
   cursor: pointer;
@@ -177,15 +177,6 @@ main {
   position: relative; /* 이를 통해 map 내부의 자식 요소들에게 절대 위치를 지정할 수 있게 됩니다. */
 }
 
-#myRoundButton {
-  position: absolute; /* 버튼의 위치를 절대 위치로 지정 */
-  top: 10px; /* 버튼을 지도의 상단에서 10px 떨어진 곳에 위치 */
-  left: 10px; /* 버튼을 지도의 왼쪽에서 10px 떨어진 곳에 위치 */
-  z-index: 10; /* 다른 지도 요소들 위에 버튼이 보이게 하기 위해 z-index 값을 크게 설정 */
-  border-radius: 50%; /* 버튼을 원형으로 만들기 위해 */
-  padding: 10px 15px; /* 버튼 내부의 패딩 값 지정 */
-}
-
 .searchInput {
   width: 50px;
   height: 100%;
@@ -292,58 +283,6 @@ main {
   left: 48px;
   margin-left: -11px;
 }
-
-.sidebar {
-  height: 100%;
-  width: 0px;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.3s;/*펼침속도*/
-  padding-top: 60px;
-  }
-
-  .sidebar a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 20px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-  }
-
-  /*메뉴열기 hover 시*/
-  .sidebar a:hover {
-  color: #f1f1f1;
-  }
-
-
-  .sidebar .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-  }
-
-  .openbtn {
-  position: absolute;
-  width: 40px;
-  font-size: 1.5rem;
-  align-items: center;
-  background-color: #111;
-  color: white;
-  padding: 5px 5px;
-  border: none;
-  }
-
-  .openbtn:hover {
-  background-color: #444;
-  }
-
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -399,3 +338,56 @@ main {
   #searchResults li:hover {
     background-color: #f7f7f7;
   }
+
+.search-bar-container {
+  position: absolute; /* 절대 위치 */
+  top: 0px; /* 상단에서의 위치 */
+  left: 0px; /* 왼쪽에서의 위치 */
+  z-index: 1000; /* 다른 요소 위에 표시 */
+  display: flex;
+  background-color: white;
+  flex-direction: row; /* 가로 방향으로 배열 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 10px; /* 요소들 사이 간격 */
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+  width: 200px; /* 입력란의 너비 */
+  padding: 5px; /* 입력란 내부의 패딩 */
+  margin-bottom: 5px; /* 입력란 아래의 여백 */
+}
+
+/* 자동완성 목록을 별도의 컨테이너로 분리 */
+.autocomplete-container {
+  position: absolute; /* 절대 위치 */
+  top: 100%; /* 입력란 바로 아래 */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* 다른 요소 위에 표시 */
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* 넘치면 스크롤 */
+  max-height: 200px; /* 최대 높이 설정 */
+}
+
+.search-bar div {
+  background-color: #f1f1f1; /* 자동완성 목록의 배경색 */
+  padding: 5px; /* 자동완성 목록의 패딩 */
+  cursor: pointer; /* 마우스 커서 스타일 */
+}
+
+.search-bar div:hover {
+  background-color: #ddd; /* 마우스 오버시 배경색 변경 */
+}
+
+button {
+  padding: 5px 10px; /* 버튼의 패딩 */
+}
