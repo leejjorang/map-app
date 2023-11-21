@@ -268,7 +268,7 @@ main {
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
-  min-width: 280px;
+  min-width: 250px;
   z-index: 0;  
 }
 .ol-popup:after, .ol-popup:before {
