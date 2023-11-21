@@ -496,7 +496,7 @@ const Map = ({ children }) => {
       console.log('알림 실행 : 사용자가 선택 + 선택 값보다 큰 등급 + 등급의 변화 ');
       const message = {key1:'NOTIFICATION', key2:`${grade}`};
       window.ReactNativeWebView.postMessage(JSON.stringify(message));
-  }}, 5000)};
+  }}, 3000)};
 
   return() => {
     clearInterval(interCheck);    // 언마운트 시 메모리 누수 방지
