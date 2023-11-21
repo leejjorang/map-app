@@ -135,23 +135,153 @@ function getCurrentLocation(){
   }
 
 
-function fetchtest(){
+// function fetchtest(){
 
-  var source = new VectorWMS();
-  var layer = new Vector({
-    source : source
-  });
+//   var source = new VectorWMS();
+//   var layer = new Vector({
+//     source : source
+//   });
 
-  var iconStyle = new Style({
-    image: new Icon({
-      src:'https://map.vworld.kr/images/ol3/marker_blue.png'
-    })
+//   var iconStyle = new Style({
+//     image: new Icon({
+//       src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+//     })
+//   });
+
+// const start_x = 14377898.964024764;
+// const start_y = 4186136.484549115;
+// const arrive_x = 14378039.096214402;
+// const arrive_y = 4186522.952128591;
+
+// fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//         start_point: [start_x, start_y],
+//         arrive_point: [arrive_x, arrive_y]
+//     })
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(data.route); 
+
+//     for(var i=0; i<(data.route).length; i++){
+
+//       var datalists = data.route[i];
+  
+//       if(i===0){
+//         map.getView().setCenter(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857')));
+//         map.getView().setZoom(17);
+//       }
+  
+//       var marker = new Feature({
+//         geometry: new Point(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857'))),
+//         name: "marker",
+//       });
+      
+//       marker.setStyle(iconStyle);
+//       source.addFeature(marker);
+//     }
+  
+//     map.addLayer(layer);
+
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//   });
+// }
+
+
+// // vector layer
+
+//  function route(){
+
+//   const coords = [14371464.705349823, 4182012.720301426, 14371434.660219256, 4182008.704817033, 14371424.00694399, 4182010.69214133, 
+//     14371401.030601088, 4182006.336362514, 14371372.32130441, 4181989.811642194, 14371344.001625957, 4181998.795424485, 14371321.158866443, 4182014.598731912,
+//      14371298.36063473, 4182017.3891545995, 14371289.27696428, 4182025.5154139404, 14371266.590052057, 4182037.031027834, 14371237.257366234, 4182044.5175444675,
+//       14371205.831873981, 4182078.179708103, 14371156.027533803, 4182131.552074411, 14371143.971632946, 4182146.634136258, 14370944.20880672, 4182220.942175655,
+//        14371046.311043676, 4182208.10600136, 14370944.20880672, 4182220.942175655, 14370846.459161855, 4182321.971417481, 14370820.543984395, 4182315.5600760607,
+//         14370721.770200215, 4182291.0990049625, 14370691.602618212, 4182283.625933909, 14370643.790896917, 4182271.783372612, 14370585.548539333, 4182267.7814064845,
+//          14370444.272973567, 4182258.1031882484, 14370294.615050146, 4182246.2198179225, 14370166.01877438, 4182238.229517661, 14370139.51360362, 4182236.5824547806,
+//           14370011.251286332, 4182228.619385628, 14369890.413979074, 4182221.105520494, 14369742.370188266, 4182211.9173771166, 14369652.5130953, 4182206.3364344877];
+
+//   let dstSource = new VectorWMS();
+//   let dstLayer = new Vector({
+//     source : dstSource
+//   });
+
+//   let dstIconStyle = new Style({
+//     image: new Icon({
+//       src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+//       })
+//     });
+
+//   let dstMarker = new Feature({
+//     geometry: new Point([coords[(coords.length-2)], coords[(coords.length-1)]],),
+//     name: "destination",
+//   });
+
+//   let srcIconStyle= new Style({
+//     image: new Circle({
+//       radius: 6,
+//       fill: new Fill({color: 'blue'}),
+//       stroke: new Stroke({color: 'white', width: 3})
+//     })
+//   });
+
+//   let srcMarker = new Feature({
+//     geometry: new Point([coords[0], coords[1]]),
+//     name: "source",
+//   });
+
+//   dstMarker.setStyle(dstIconStyle);
+//   dstSource.addFeature(dstMarker);
+//   srcMarker.setStyle(srcIconStyle);
+//   dstSource.addFeature(srcMarker);
+//   dstLayer.setZIndex(2);
+//   map.addLayer(dstLayer);
+
+//   let path = [];
+//   for(let i = 0; i < coords.length; i+=2) {
+//   path.push([coords[i], coords[i + 1]]);
+//   }
+
+//   const lineString = new LineString(path);
+//   const feature = new Feature({
+//     geometry: lineString
+//   });
+  
+//   const source = new VectorWMS();
+//   source.addFeature(feature);
+//   var vector = new Vector({
+//     source,
+//     style: new Style({
+//       stroke: new Stroke({
+//         color: '#5689d6',
+//         width: 3,
+//       })
+//     })
+//   })
+
+//   vector.setZIndex(2);
+//   map.addLayer(vector);
+
+// }
+
+
+function fetchtest(dstPoint){
+
+  let dstSource = new VectorWMS();
+  let dstLayer = new Vector({
+    source : dstSource
   });
 
 const start_x = 14377898.964024764;
 const start_y = 4186136.484549115;
-const arrive_x = 14378039.096214402;
-const arrive_y = 4186522.952128591;
+const arrive_x = dstPoint[0];
+const arrive_y = dstPoint[1];
 
 fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
     method: 'POST',
@@ -165,27 +295,80 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data.route); 
+
+    const coords = [];
 
     for(var i=0; i<(data.route).length; i++){
 
       var datalists = data.route[i];
-  
+      
+      coords.push(datalists.X, datalists.Y);
+
       if(i===0){
-        map.getView().setCenter(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857')));
+        map.getView().setCenter([datalists.X, datalists.Y]);
         map.getView().setZoom(17);
       }
-  
-      var marker = new Feature({
-        geometry: new Point(fromLonLat([datalists.lon, datalists.lat],getProjection('EPSG:3857'))),
-        name: "marker",
-      });
-      
-      marker.setStyle(iconStyle);
-      source.addFeature(marker);
     }
+
+    let dstIconStyle = new Style({
+      image: new Circle({
+        radius: 6,
+        fill: new Fill({color: 'red'}),
+        stroke: new Stroke({color: 'white', width: 3})
+      })
+    });
   
-    map.addLayer(layer);
+    let dstMarker = new Feature({
+      geometry: new Point([data.route[(data.route.length-1)].X, data.route[(data.route.length-1)].Y]),
+      name: "destination",
+    });
+  
+    let srcIconStyle= new Style({
+      image: new Circle({
+        radius: 6,
+        fill: new Fill({color: 'blue'}),
+        stroke: new Stroke({color: 'white', width: 3})
+      })
+    });
+  
+    let srcMarker = new Feature({
+      geometry: new Point([data.route[0].X, data.route[1].Y]),
+      name: "source",
+    });
+
+    dstMarker.setStyle(dstIconStyle);
+    dstSource.addFeature(dstMarker);
+    srcMarker.setStyle(srcIconStyle);
+    dstSource.addFeature(srcMarker);
+    dstLayer.setZIndex(2);
+    map.addLayer(dstLayer);
+
+  let path = [];
+  for(let i = 0; i < coords.length; i+=2) {
+  path.push([coords[i], coords[i + 1]]);
+  }
+
+  const lineString = new LineString(path);
+  const feature = new Feature({
+    geometry: lineString
+  });
+  
+  const source = new VectorWMS();
+  source.addFeature(feature);
+  var vector = new Vector({
+    source,
+    style: new Style({
+      stroke: new Stroke({
+        color: [86, 137, 214, 0.9],    //#5689d6
+        width: 10,
+        lineCap: 'round',
+        lineJoin: 'round',
+      })
+    })
+  })
+
+  vector.setZIndex(2);
+  map.addLayer(vector);
 
   })
   .catch(error => {
@@ -193,75 +376,69 @@ fetch('https://safewalk-safewalk.koyeb.app/calculate_route', {
   });
 }
 
-
 // vector layer
 
- function route(){
-  const coords = [129.1003727,35.1366576,129.1001105,35.1370199,129.0995125,35.1371386, 129.098773,35.1367982, 129.0983886,35.136615, 129.097634,35.1362634, 129.0969316,35.1359131, 129.0967978,35.1358463, 129.0958545,35.1356552, 129.0955102,35.1355855, 129.0952774,35.1355384, 129.0943901,35.1353587, 129.0941191,35.1353038, 129.0936896,35.1352168, 129.0931664,35.1351874, 129.0918973,35.1351163,129.0905529,35.135029, 129.0893977,35.1349703, 129.0891596 ,35.1349582, 129.0880074,35.1348997, 129.0869219,35.1348445, 129.085592,35.134777, 129.0847848,35.134736];
+// function route(){
+//   const coords = [ 129.1003727,35.1366576,129.1001105,35.1370199,129.0995125,35.1371386, 129.098773,35.1367982, 129.0983886,35.136615, 129.097634,35.1362634, 129.0969316,35.1359131, 129.0967978,35.1358463, 129.0958545,35.1356552, 129.0955102,35.1355855, 129.0952774,35.1355384, 129.0943901,35.1353587, 129.0941191,35.1353038, 129.0936896,35.1352168, 129.0931664,35.1351874, 129.0918973,35.1351163,129.0905529,35.135029, 129.0893977,35.1349703, 129.0891596 ,35.1349582, 129.0880074,35.1348997, 129.0869219,35.1348445, 129.085592,35.134777, 129.0847848,35.134736];
+//   let path = [];
+//   for(let i = 0; i < coords.length; i+=2) {
+//    path.push([coords[i], coords[i + 1]]);
+//  }
 
-  let dstSource = new VectorWMS();
-  let dstLayer = new Vector({
-    source : dstSource
-  });
+//  let dstIconStyle = new Style({
+//   image: new Icon({
+//     src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+//     })
+//   });
 
- let dstIconStyle = new Style({
-  image: new Icon({
-    src:'https://map.vworld.kr/images/ol3/marker_blue.png'
-    })
-  });
+// let dstMarker = new Feature({
+//   geometry: new Point(fromLonLat([coords[(coords.length-2)], coords[(coords.length-1)]]),getProjection('EPSG:3857')),
+//   name: "destination",
+// });
 
- let dstMarker = new Feature({
-  geometry: new Point(fromLonLat([coords[(coords.length-2)], coords[(coords.length-1)]],getProjection('EPSG:3857'))),
-  name: "destination",
-});
+// let srcIconStyle= new Style({
+//   image: new Circle({
+//     radius: 6,
+//     fill: new Fill({color: 'blue'}),
+//     stroke: new Stroke({color: 'white', width: 3})
+//   })
+// });
 
-let srcIconStyle= new Style({
-  image: new Circle({
-    radius: 6,
-    fill: new Fill({color: 'blue'}),
-    stroke: new Stroke({color: 'white', width: 3})
-  })
-});
+// let srcMarker = new Feature({
+//   geometry: new Point(fromLonLat([coords[0], coords[1]]),getProjection('EPSG:3857')),
+//   name: "source",
+// });
 
-let srcMarker = new Feature({
-  geometry: new Point(fromLonLat([coords[0], coords[1]],getProjection('EPSG:3857'))),
-  name: "source",
-});
-
-dstMarker.setStyle(dstIconStyle);
-dstSource.addFeature(dstMarker);
-srcMarker.setStyle(srcIconStyle);
-dstSource.addFeature(srcMarker);
-dstLayer.setZIndex(2);
-map.addLayer(dstLayer);
-
-let path = [];
-for(let i = 0; i < coords.length; i+=2) {
- path.push([coords[i], coords[i + 1]]);
-}
-
- const lineString = new LineString(path);
- lineString.transform('EPSG:4326', 'EPSG:3857');
- const feature = new Feature({
-   geometry: lineString
- });
+//  const lineString = new LineString(path);
+//  lineString.transform('EPSG:4326', 'EPSG:3857');
+//  const feature = new Feature({
+//    geometry: lineString
+//  });
  
- const source = new VectorWMS();
- source.addFeature(feature);
- var vector = new Vector({
-   source,
-   style: new Style({
-     stroke: new Stroke({
-       color: '#5689d6',
-       width: 3,
-     })
-   })
- })
+//  const source = new VectorWMS();
+//  source.addFeature(feature);
+//  var vector = new Vector({
+//    source,
+//    style: new Style({
+//      stroke: new Stroke({
+//        color: [86, 137, 214, 0.9],    //#5689d6
+//        width: 10,
+//        lineCap: 'round',
+//        lineJoin: 'round',
+//      })
+//    })
+//  })
 
-vector.setZIndex(2);
-map.addLayer(vector);
+// dstMarker.setStyle(dstIconStyle);
+// source.addFeature(dstMarker);
+// srcMarker.setStyle(srcIconStyle);
+// source.addFeature(srcMarker);
+// vector.setZIndex(2);
 
- }
+// map.addLayer(vector);
+
+//  }
+
 
 const Map = ({ children }) => {
   const [mapObj, setMapObj] = useState({});
@@ -275,7 +452,7 @@ const Map = ({ children }) => {
 
   
 
-    route();
+    //route();
     //fetchtest();
     
     setMapObj({ map })  
@@ -337,7 +514,8 @@ const Map = ({ children }) => {
       
     var iconStyle = new Style({
       image: new Icon({
-        src:'https://map.vworld.kr/images/ol3/marker_blue.png'
+        src : process.env.PUBLIC_URL + '/pin_mark.png',
+        scale : 0.07,
       })
     });
 
@@ -425,6 +603,12 @@ const Map = ({ children }) => {
     map.getView().setZoom(17);
     setSearchResults([]); // 선택 후 검색 결과 비우기
     setSearchTerm(item.title); // 검색창에 선택된 주소 표시
+    fetchtest(coords);
+    map.getLayers().forEach(layer => {
+      if (layer.get('name') === 'searchLayer') {
+        map.removeLayer(layer);
+      }
+    });
   };
 
   useEffect(() =>{
